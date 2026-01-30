@@ -12,7 +12,7 @@ function AuthCallbackContent() {
   const searchParams = useSearchParams();
   const { setSession } = useAuth();
   const { t } = useTranslation();
-  
+
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
@@ -158,7 +158,7 @@ function AuthCallbackContent() {
         // Redirect to the original destination
         const redirectPath = next.startsWith("/")
           ? `/${lng}${next}`
-          : `/${lng}/`;
+          : `/${lng}/dashboard`;
         router.push(redirectPath);
       } catch (error) {
         console.error("Auth callback error:", error);
@@ -187,7 +187,7 @@ function AuthCallbackContent() {
 
 export default function AuthCallback() {
   const { t } = useTranslation();
-  
+
   return (
     <Suspense
       fallback={

@@ -72,7 +72,7 @@ export const SignUpForm = () => {
       setSession(session);
 
       // Redirect to home
-      router.push(`/${i18n.language}/`);
+      router.push(`/${i18n.language}/dashboard`);
     } catch (error) {
       console.error("Sign up error:", error);
 

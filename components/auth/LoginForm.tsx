@@ -113,7 +113,7 @@ export const LoginForm = () => {
       router.push(redirectTo);
     } else {
       router.refresh();
-      router.push(`/${i18n.language}/`);
+      router.push(`/${i18n.language}/dashboard`);
     }
   };
 
