@@ -1,0 +1,52 @@
+{
+  "title": "Your Travel Guide is Online Now 🟢",
+  "subtitle": "Chat with your dedicated guide—real human, real-time support",
+  "get_help_from_locals": "Connect with your travel expert",
+  "floating_text": "👋 Your guide is online—avg response: 3 min",
+  "floating_pulse": "María is online now",
+  "admin_support": "Owner Support",
+  "guided_experience": {
+    "badge": "Guided Experience",
+    "title": "Start Your Guided Journey",
+    "description": "Connect with a dedicated travel guide who'll be with you from planning to post-trip",
+    "cta": "Chat with Your Guide Now"
+  },
+  "quick_help": {
+    "title": "Quick Questions?",
+    "description": "Get instant answers about routes, campers, or dates",
+    "cta": "Ask a Question"
+  },
+  "options": {
+    "guided_title": "Get a Personal Guide",
+    "guided_description": "Full trip planning & 24/7 support",
+    "route_title": "Plan Your Route",
+    "route_description": "Custom itinerary & hidden gems",
+    "vehicle_title": "Find Your Perfect Camper",
+    "vehicle_description": "Expert matching to your needs",
+    "dates_title": "Best Travel Times",
+    "dates_description": "Weather & seasonal advice"
+  },
+  "messages": {
+    "general": "Hi! I'm interested in a guided camper experience with personal support. Can you tell me more?",
+    "route": "Hi! I'd like help planning my camper route with a travel guide.",
+    "vehicle": "Hi! I need advice on choosing the right camper for my trip style.",
+    "guided": "Hi! I want to start a guided journey with a dedicated travel expert. What's the first step?",
+    "admin": "Hi! I'm a camper owner and need help with my account."
+  },
+  "status": {
+    "online": "Online now",
+    "avg_response": "Avg response: {{minutes}} min",
+    "typing": "Guide is typing..."
+  },
+  "camper_inquiry": {
+    "button": "Contact us",
+    "greeting": "Hello! 👋",
+    "interest": "I'm interested in renting: *{{camperName}}*",
+    "type": "Type: {{camperType}}",
+    "location": "Location: {{location}}",
+    "reference": "Reference: {{camperId}}",
+    "email": "My email: {{email}}",
+    "help": "Could you help me with more information? 🚐"
+  },
+  "or_ask_about": "Or ask about"
+}

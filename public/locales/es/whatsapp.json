@@ -1,0 +1,35 @@
+{
+  "title": "Habla con un Guía Real",
+  "subtitle": "Humanos locales reales, no bots. Obtén consejos personalizados de viaje.",
+  "get_help_from_locals": "Obtén ayuda de gente local",
+  "floating_text": "¿Planificando un viaje en camper? ¡Conéctate con tu guía personal! 🚐",
+  "admin_support": "Soporte Admin",
+  "options": {
+    "guided_title": "Comienza la Experiencia Guiada",
+    "guided_description": "Guía personal + camper premium (GRATIS)",
+    "route_title": "Planificar mi ruta",
+    "route_description": "Ayúdame a diseñar mi itinerario",
+    "vehicle_title": "Recomendar un camper",
+    "vehicle_description": "¿Cuál se adapta a mi viaje?",
+    "dates_title": "Consultar disponibilidad",
+    "dates_description": "¿Fechas abiertas para mi viaje?"
+  },
+  "messages": {
+    "guided": "¡Hola! Me interesa la experiencia guiada completa con un guía dedicado para mi viaje en camper. ¿Podemos conversar sobre mi aventura?",
+    "general": "¡Hola! Necesito ayuda con mi viaje en camper. ¿Pueden ayudarme?",
+    "route": "¡Hola! Me gustaría que me ayuden a planificar mi ruta de viaje en camper. ¿Cuáles son los mejores lugares para visitar?",
+    "vehicle": "¡Hola! Necesito asesoría para elegir el vehículo adecuado para mi viaje. ¿Qué camper me recomiendan?",
+    "admin": "¡Hola! Soy propietario y necesito ayuda con mi cuenta administrativa."
+  },
+  "camper_inquiry": {
+    "button": "Contáctanos",
+    "greeting": "¡Hola! 👋",
+    "interest": "Estoy interesado en alquilar: *{{camperName}}*",
+    "type": "Tipo: {{camperType}}",
+    "location": "Ubicación: {{location}}",
+    "reference": "Referencia: {{camperId}}",
+    "email": "Mi correo: {{email}}",
+    "help": "¿Podrías ayudarme con más información? 🚐"
+  },
+  "or_ask_about": "O preguntar sobre"
+}
