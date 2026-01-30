@@ -1,0 +1,240 @@
+---
+description: Component architecture patterns, section components, and UI component guidelines
+globs:
+  - "components/**/*.{ts,tsx}"
+  - "app/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Component Architecture
+
+## Summary
+
+Establishes conventions for building scalable, maintainable components in the RootsCampers project. All components must follow these patterns to ensure consistency across Section components, UI components, and Next.js Pages. These guidelines cover state management, responsiveness, accessibility, and proper export patterns. References [nextjs](mdc:.cursor/rules/nextjs.mdc) for page structure, [styling](mdc:.cursor/rules/styling.mdc) for component styling, and [data-validation](mdc:.cursor/rules/data-validation.mdc) for prop types.
+
+## Section components
+
+- Follow established patterns from HeroSection, FeatureSection, etc.
+- Use `export const` with arrow functions (not `export default function`)
+- Keep sections self-contained with their own state
+- Use consistent spacing and padding
+- Implement proper responsive design
+- Sections act as managers: general states and data fetching should occur here
+- Exceptionally, data fetching can happen in UI components when appropriate
+- For data types, create or use an existing type, always review from database to match fields
+
+## Example section structure
+
+```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+
+export const MySection = () => {
+  const { t } = useTranslation("page-name");
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Data fetching logic here
+    // Sections act as managers for state and data
+  }, []);
+
+  return (
+    <section className="py-36 md:py-52">
+      <div className="container mx-auto px-10 md:px-20">
+        {/* Section content */}
+      </div>
+    </section>
+  );
+};
+```
+
+## UI components
+
+- Store reusable UI components in `components/ui/`
+- Store non-reusable components in `components/[page-name]/`
+- Use consistent prop naming:
+  - `className` for style overrides
+  - `children` for slot content
+  - `on*` for event handlers
+- Components have a unique responsibility: rendering user interface and managing their own states
+- Components can fetch data if needed (exceptionally, when not managed by sections)
+- As a suggestion, components should have a maximum length of 300 code lines
+- If a component exceeds 300 lines, consider splitting it into smaller subcomponents
+- Create a separate file for style constants: `components/[page-name]/[section]Styles.ts`
+- Props must be declared as interfaces at the beginning of the component file (before the component definition)
+
+## Example component structure
+
+```tsx
+import { cn } from "@/lib/utils";
+
+interface MyComponentProps {
+  title: string;
+  description?: string;
+  className: string;
+}
+
+export const MyComponent = ({
+  title,
+  description,
+  className,
+}: MyComponentProps) => {
+  return (
+    <div className={cn("space-y-4 p-6", className)}>
+      <h2 className="text-2xl font-bold">{title}</h2>
+      {description && <p className="text-muted-foreground">{description}</p>}
+    </div>
+  );
+};
+```
+
+## Next.js pages
+
+- Pages in `app/[lng]/**/page.tsx` must use `export default function`
+- Next.js requires default export for routing to work correctly
+- Use async functions for server components that fetch data
+- Pages can be server or client components based on requirements
+
+Example Page Structure:
+
+```tsx
+"use client"; // Only if client-side interactivity is needed
+
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { MySection } from "@/components/page-name/MySection";
+
+export default function MyPage() {
+  const { t } = useTranslation("page-name");
+  const [state, setState] = useState();
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow">
+        <MySection />
+      </main>
+    </div>
+  );
+}
+```
+
+## Loading states and error handling
+
+- Always handle loading, error, and empty states when fetching data
+- Create dedicated skeleton components for loading states (e.g., `ItemSkeleton.tsx`) when needed
+- Use descriptive state variables: `isLoading`, `error`, `showEmptyState`, `showErrorState`
+- Display error messages using translated strings: `t("error.fetch_failed", "Fallback message")`
+- Provide retry mechanisms for error states when appropriate
+- Use conditional rendering with nested ternary operators to show appropriate UI for each state
+- Compute state flags before the return statement for clarity
+
+## Example loading state pattern
+
+```tsx
+const [data, setData] = useState<DataType | null>(null);
+const [isLoading, setIsLoading] = useState(true);
+const [error, setError] = useState<string | null>(null);
+
+// Fetch data in useEffect
+useEffect(() => {
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await fetchDataFromAPI();
+      setData(result);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError(
+        t("error.fetch_failed", "Failed to load data. Please try again."),
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+// Retry handler (optional)
+const handleRetry = () => {
+  // Re-trigger fetch or reload
+  window.location.reload();
+  // Or: fetchData() if defined outside useEffect
+};
+
+// Compute state flags
+const showEmptyState = !error && !isLoading && (!data || data.length === 0);
+const showErrorState = Boolean(error);
+
+// In JSX:
+{
+  showErrorState ? (
+    <div className="flex flex-col items-center gap-4">
+      <p className="text-center text-lg text-red-600">{error}</p>
+      <Button onClick={handleRetry}>{t("error.retry")}</Button>
+    </div>
+  ) : showEmptyState ? (
+    <p className="text-center text-lg cursor-default">
+      {t("section.no_items")}
+    </p>
+  ) : (
+    <>{isLoading ? <ItemSkeleton /> : <Content data={data} />}</>
+  );
+}
+```
+
+## Accessibility patterns
+
+- Use `cursor-default` class for non-interactive text elements (headings, descriptions, labels)
+- This prevents the text cursor from appearing on hover, improving UX
+- Apply to: headings (`h1`, `h2`, etc.), paragraphs (`p`), spans with text content
+- Do not apply to: links, buttons, interactive elements
+
+Example:
+
+```tsx
+<h2 className="text-2xl font-bold cursor-default">{title}</h2>
+<p className="text-muted-foreground cursor-default">{description}</p>
+```
+
+## Image handling
+
+- Use Next.js Image component with proper optimization
+- Always include `alt` text describing the image content
+- Set `quality` to 90 for optimal file size vs visual quality balance
+- Provide fallback UI for missing/failed image loads
+- Follow image size guidelines from next.config.js:
+  - Device sizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840]
+  - Image sizes: [16, 32, 48, 64, 96, 128, 256, 384]
+- Use proper image formats (WebP preferred)
+- Implement proper loading strategies:
+  - priority for LCP images
+  - lazy for below-the-fold
+- Always provide fallback UI for missing images
+
+## Example image component
+
+```tsx
+import Image from "next/image";
+
+✅ DO:
+<Image
+  src="/images/hero.webp"
+  alt="Hero section background showcasing camping site"
+  width={1200}
+  height={600}
+  quality={90}
+  priority
+  sizes="(max-width: 768px) 100vw, 1200px"
+/>
+
+❌ DON'T:
+<img src="/images/hero.webp" />  // Missing optimization and alt text
+<Image src="/images/hero.webp" /> // Missing required width, height, alt, sizes
+```

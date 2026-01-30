@@ -1,0 +1,71 @@
+---
+description: Security best practices
+globs: middleware.ts, next.config.js, app/api/**/*.ts
+alwaysApply: false
+---
+
+# Security Standards
+
+## Summary
+
+Defines security best practices including headers configuration, image security, API security, and environment variable handling. References [nextjs](mdc:.cursor/rules/nextjs.mdc) for middleware patterns, [data-validation](mdc:.cursor/rules/data-validation.mdc) for input validation, and [supabase](mdc:.cursor/rules/supabase.mdc) for authentication patterns.
+
+## Headers configuration
+
+- Maintain security headers from next.config.js:
+  - X-Content-Type-Options: nosniff
+  - X-Frame-Options: DENY
+  - X-XSS-Protection: 1; mode=block
+- Add additional headers when needed:
+  - Strict-Transport-Security
+  - Content-Security-Policy
+  - Permissions-Policy
+
+## Image security
+
+- Follow safe SVG handling:
+  - Use dangerouslyAllowSVG with caution
+  - Maintain strict CSP: "default-src 'self'; script-src 'none'; sandbox;"
+- Validate image uploads
+- Use proper content disposition
+
+## API security
+
+- Implement rate limiting
+- Validate all inputs
+- Use proper CORS configuration
+- Implement proper authentication checks
+- Handle errors securely:
+  - Don't expose internal errors
+  - Log security events
+  - Use proper status codes
+
+## Environment variables
+
+- Keep sensitive data in .env
+- Use proper naming:
+  - NEXT*PUBLIC* only for client-side
+  - Internal vars for server-side
+- Validate env vars at startup
+
+## Example middleware pattern
+
+```ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+
+  // Security headers
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-XSS-Protection", "1; mode=block");
+
+  return response;
+}
+
+export const config = {
+  matcher: "/:path*",
+};
+```

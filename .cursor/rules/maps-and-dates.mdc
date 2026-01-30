@@ -1,0 +1,70 @@
+---
+description: Maps (Leaflet/Mapbox) and dates (date-fns)
+globs: components/**/Map*.tsx, components/**/*Calendar*.tsx, utils/date*.ts
+alwaysApply: false
+---
+
+# Maps and Date Handling
+
+## Summary
+
+Defines patterns for map components using React Leaflet and date handling with date-fns. Includes accessibility guidelines, performance best practices, and consistent date formatting. References [components](mdc:.cursor/rules/components.mdc) for component patterns and [styling](mdc:.cursor/rules/styling.mdc) for map styling.
+
+## Leaflet maps
+
+- Use React Leaflet for all map components
+- Implement proper clustering for large datasets
+- Follow performance best practices:
+  - Lazy load markers
+  - Use proper zoom levels
+  - Implement proper bounds
+- Implement proper accessibility:
+  - Keyboard navigation
+  - Screen reader support
+  - ARIA labels
+
+## Example map component
+
+```tsx
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+
+const MapComponent = () => (
+  <MapContainer
+    center={[lat, lng]}
+    zoom={13}
+    className="h-[500px] w-full"
+    accessibilityLabel="Interactive map"
+  >
+    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    {/* Markers */}
+  </MapContainer>
+);
+```
+
+## Date handling with date-fns
+
+- Use consistent date formatting
+- Implement proper timezone handling
+- Use locale-aware formatting
+- Follow naming conventions:
+  - formatDate for display dates
+  - parseDate for parsing dates
+  - compareDate for comparisons
+
+## Common date patterns
+
+```ts
+import { format, parse, isValid } from "date-fns";
+
+// Formatting
+const formatDate = (date: Date) => format(date, "PP");
+const formatTime = (date: Date) => format(date, "p");
+
+// Parsing
+const parseDate = (dateString: string) =>
+  parse(dateString, "yyyy-MM-dd", new Date());
+
+// Validation
+const isValidDate = (date: unknown): date is Date =>
+  date instanceof Date && isValid(date);
+```

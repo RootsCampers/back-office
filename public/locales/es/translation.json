@@ -1,0 +1,25 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "creating": "Creando...",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "create": "Crear",
+    "back": "Volver",
+    "next": "Siguiente",
+    "remove": "Eliminar",
+    "submitting": "Enviando...",
+    "loading": "Cargando...",
+    "home": "Inicio",
+    "dismiss": "Cerrar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "day": "Día",
+    "days": "Días",
+    "close": "Cerrar",
+    "continue": "Continuar",
+    "status": "Estado",
+    "success": "Éxito",
+    "error": "Error"
+  }
+}

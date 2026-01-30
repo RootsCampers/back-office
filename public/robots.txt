@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /auth/
+Disallow: /login
+Disallow: /sign-up
+Disallow: /my-campers
+Disallow: /my-trips
+Disallow: /my-locations
+
+Sitemap: https://rootscampers.com/api/sitemap.xml 

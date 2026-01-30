@@ -1,0 +1,102 @@
+---
+description: Styles with Tailwind CSS, shadcn/ui and Framer Motion
+globs: components/**/*.tsx, app/**/*.tsx
+alwaysApply: false
+---
+
+# Styles and UI
+
+## Summary
+
+Defines styling patterns with Tailwind CSS, shadcn/ui + Radix UI components, and animations with Framer Motion. Uses semantic color tokens and utility classes. Reference [nextjs](mdc:.cursor/rules/nextjs.mdc) for component conventions, [data-validation](mdc:.cursor/rules/data-validation.mdc) for prop types, and [security](mdc:.cursor/rules/security.mdc) for secure SVG handling.
+
+## shadcn/ui + Radix UI
+
+We use shadcn/ui. Base components are in `components/ui/`:
+
+```tsx
+// ✅ DO: Use components from ui/
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+<Button variant="destructive" size="sm">
+  Cancel
+</Button>;
+
+// ❌ DON'T: Create custom buttons without using the system
+<button className="bg-red-500 px-4 py-2">Cancel</button>;
+```
+
+### Available Button variants
+
+- `default` | `destructive` | `outline` | `secondary` | `tertiary` | `ghost` | `link`
+- Sizes: `default` | `sm` | `lg` | `icon`
+
+## `cn()` utility for conditional classes
+
+```tsx
+import { cn } from "@/lib/utils";
+
+<div
+  className={cn(
+    "base-classes",
+    isActive && "active-classes",
+    className, // allows override from props
+  )}
+/>;
+```
+
+## Theme colors
+
+We use HSL CSS variables defined in `globals.css`. Always reference semantic tokens:
+
+```tsx
+// ✅ DO: Use semantic tokens
+className = "bg-background text-foreground";
+className = "bg-primary text-primary-foreground";
+className = "text-muted-foreground";
+className = "border-border";
+
+// ❌ DON'T: Hardcoded colors
+className = "bg-white text-black";
+className = "bg-[#1a1a1a]";
+```
+
+## Animations with Framer Motion
+
+```tsx
+import { motion } from "framer-motion";
+
+// Basic fade-in pattern
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.3 }}
+></motion.div>;
+
+// For lists, use staggerChildren
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+```
+
+## Predefined CSS animations
+
+The project has keyframes in `tailwind.config.js`:
+
+- `animate-fade-up` - Fade from bottom
+- `animate-fade-down` - Fade from top
+- `animate-fade-in` - Simple fade
+
+## Responsive (Mobile-first)
+
+```tsx
+// ✅ Mobile-first: base → sm → md → lg
+className = "flex flex-col md:flex-row";
+className = "text-sm md:text-base lg:text-lg";
+className = "p-4 md:p-6 lg:p-8";
+```

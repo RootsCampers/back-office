@@ -1,0 +1,72 @@
+---
+description: Internationalization standards for translation
+globs:
+  [
+    "app/i18n/**/*.{ts,tsx,js,jsx}",
+    "public/locales/**/*.json",
+    "app/**/**/page.{ts,tsx}",
+  ]
+alwaysApply: false
+---
+
+# Internationalization
+
+## Summary
+
+Defines i18next patterns for multi-language support with locale-based routing. Organizes translations using namespaces and provides migration workflows for page-specific translations. References [nextjs](mdc:.cursor/rules/nextjs.mdc) for locale routing patterns and [assets](mdc:.cursor/rules/assets.mdc) for translation file organization.
+
+## When working with internationalization
+
+- Use i18next for all text content
+- Follow the [lng] dynamic route pattern
+- Implement proper language detection and switching
+- Use namespaces to organize translations:
+  - common: for shared translations
+  - pages: for page-specific content
+  - forms: for form-related content
+  - errors: for error messages
+
+## Translation guidelines
+
+- Use proper interpolation for dynamic content: {{variable}}
+- Implement plural forms using count: {{count}}
+- Keep translation keys hierarchical and organized
+- Use context for ambiguous translations
+
+## File organization
+
+- Store translations in app/i18n/locales/[lang]/[namespace].json
+- Keep language detection logic in app/i18n/settings
+- Implement proper fallback chains for missing translations
+- Use TypeScript for type-safe translations
+
+## Migration and workflow best practices
+
+When creating new page-specific translations:
+
+- Create dedicated translation files for each new page/feature
+- Use descriptive naming convention: `[page-name].json` or add new feature to its corresponding page json
+- Keep page-specific translations isolated from shared/common translations
+- Maintain shared translations in the main `common.json` namespace
+- Safe migration workflow:
+  - Copy translations to dedicated page file first
+  - Scan the codebase for usages before removing from main file
+  - Verify all references work correctly
+  - Then remove from the original location
+- Use namespace parameter: `useTranslation('page-name')` to load page-specific translations
+- Note: Common translations still work when using page-specific namespaces
+
+## Example for a new "about" page
+
+```
+public/locales/
+  en/
+    translation.json # Shared translations
+    about.json # About page specific
+  es/
+    translation.json # Shared translations
+    about.json
+  pt/
+    translation.json # Shared translations
+    about.json
+```

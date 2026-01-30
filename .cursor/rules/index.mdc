@@ -1,0 +1,58 @@
+---
+description: Rootscampers - Camper rental platform
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Rootscampers
+
+## Summary
+
+Camper rental platform deployed on **Vercel**. Implements Next.js 15 App Router with locale-based structure (`app/[lng]/`). Defines conventions for Server/Client Components, layouts, metadata, and API routes. Reference [data-validation](mdc:.cursor/rules/data-validation.mdc) for input validation in APIs, [security](mdc:.cursor/rules/security.mdc) for headers and security, and [styling](mdc:.cursor/rules/styling.mdc) for component styling.
+
+## Technical stack
+
+- **Framework:** Next.js 15 (App Router) + React 19
+- **Styles:** Tailwind CSS + shadcn/ui (Radix UI + CVA)
+- **Animations:** Framer Motion
+- **Backend:** Supabase (Auth + Database)
+- **i18n:** i18next (es/en/pt)
+- **Maps:** Leaflet / Mapbox
+- **Dates:** date-fns
+- **Validation:** Zod
+
+## Project structure
+
+```
+app/
+├── [lng]/           # Routes with dynamic locale
+├── api/             # API routes
+└── i18n/            # i18n configuration
+components/
+├── ui/              # shadcn/ui components
+├── camper-hire/     # Rental flow
+├── home/            # Home sections
+└── [feature]/       # Components by feature
+types/               # TypeScript types
+lib/                 # Utilities (supabase, utils)
+```
+
+## Development principles
+
+1. **Server Components by default** - Only use 'use client' when necessary
+2. **Mobile-first** - Design first for mobile
+3. **Type-safe** - Everything must be typed, without `any`
+4. **DRY** - Reuse components from `components/ui/`
+
+## Workflow
+
+- Propose → Test → Iterate
+- Don't document in .md, just work and deliver
+
+## Maintaining these rules
+
+- Each rule should have specific `globs` to auto-activate on relevant files
+- Only `index.mdc` should use `alwaysApply: true`
+- Add new rules when a pattern is used in 3+ files
+- Reference real project files, not generic examples
+- Keep rules concise (~50-100 lines max)

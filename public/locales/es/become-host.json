@@ -1,0 +1,69 @@
+{
+  "title": "Conviértete en Anfitrión",
+  "steps": {
+    "terms": "Términos",
+    "personal": "Info Personal",
+    "business": "Info Comercial"
+  },
+  "consent": {
+    "title": "Términos de la Plataforma",
+    "point1": "RootsCampers es un mercado para que los viajeros encuentren campers de propietarios",
+    "point2": "RootsCampers solo proporciona la plataforma para compartir, mostrar, gestionar y contactar entre propietarios e inquilinos",
+    "point3": "Cualquier negocio realizado aquí es responsabilidad exclusiva del propietario del camper y el inquilino",
+    "point4": "RootsCampers ofrece las herramientas, plataforma y alianzas para ayudarte a TI a hacer esto con seguridad, facilidad y tecnología"
+  },
+  "personal_info": {
+    "title": "Información Personal",
+    "subtitle": "Cuéntanos sobre ti",
+    "full_name": "Nombre Completo (*)",
+    "full_name_placeholder": "Ingresa tu nombre completo",
+    "birth_date": "Fecha de Nacimiento",
+    "tax_id": "RUT / DNI / Cédula (*)",
+    "tax_id_placeholder": "Ingresa tu RUT o DNI",
+    "country": "País de Origen (*)",
+    "select_country": "Selecciona tu país de origen",
+    "languages": "Idiomas",
+    "select_language": "Seleccionar idioma",
+    "select_level": "Seleccionar nivel",
+    "add_language": "Agregar Idioma"
+  },
+  "business_info": {
+    "title": "Información Comercial",
+    "subtitle": "¿Cómo quieres facturar?",
+    "business_type": "Tipo de Negocio",
+    "particular": "Particular",
+    "particular_description": "Facturo con mi RUT/DNI personal",
+    "business": "Empresa",
+    "business_description": "Tengo una empresa y facturo con RUT empresarial",
+    "business_name": "Nombre de la Empresa (*)",
+    "business_name_placeholder": "Ingresa el nombre de tu empresa",
+    "business_tax_id": "RUT Empresarial (*)",
+    "business_tax_id_placeholder": "Ingresa el RUT de tu empresa",
+    "particular_note": "Usarás tu RUT personal: {{taxId}}"
+  },
+  "validation": {
+    "full_name_required": "El nombre completo es requerido",
+    "tax_id_required": "El RUT/DNI es requerido",
+    "country_required": "El país de origen es requerido",
+    "business_name_required": "El nombre de la empresa es requerido",
+    "business_tax_id_required": "El RUT empresarial es requerido"
+  },
+  "phone_label": "Número de Teléfono",
+  "phone_description": "Este número se compartirá con posibles inquilinos para contactarte sobre tus campers",
+  "accept_checkbox": "Entiendo y acepto los términos de la plataforma",
+  "submit": "Convertirme en Anfitrión",
+  "submitting": "Procesando...",
+  "confirm": "Confirmar",
+  "success": "Éxito",
+  "welcome_message": "¡Bienvenido a RootsCampers! Tu cuenta de anfitrión ha sido creada.",
+  "error": "Error",
+  "accept_terms": "Por favor acepta los términos para continuar",
+  "invalid_phone": "Por favor ingresa un número de teléfono válido",
+  "tooltip": {
+    "submitting": "Por favor espera mientras procesamos tu solicitud",
+    "phone_error": "Por favor corrige el error del número de teléfono",
+    "no_phone": "Por favor ingresa tu número de teléfono",
+    "not_accepted": "Por favor acepta los términos para continuar"
+  },
+  "required_fields": "(*) Campos requeridos"
+}

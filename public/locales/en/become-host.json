@@ -1,0 +1,69 @@
+{
+  "title": "Become a Host",
+  "steps": {
+    "terms": "Terms",
+    "personal": "Personal Info",
+    "business": "Business Info"
+  },
+  "consent": {
+    "title": "Platform Terms",
+    "point1": "RootsCampers is a marketplace for travelers to find campers from camper owners",
+    "point2": "RootsCampers only provides the platform for sharing, showcasing, managing and contacting owners and renters",
+    "point3": "Any business conducted here is solely responsibility of the camper owner and the renter",
+    "point4": "RootsCampers offers the tools, platform and partnerships to help YOU make this with security, ease and technology"
+  },
+  "personal_info": {
+    "title": "Personal Information",
+    "subtitle": "Tell us about yourself",
+    "full_name": "Full Name (*)",
+    "full_name_placeholder": "Enter your full name",
+    "birth_date": "Birth Date",
+    "tax_id": "Tax ID / DNI / RUT (*)",
+    "tax_id_placeholder": "Enter your personal tax ID",
+    "country": "Country of Origin (*)",
+    "select_country": "Select your country of origin",
+    "languages": "Languages",
+    "select_language": "Select language",
+    "select_level": "Select level",
+    "add_language": "Add Language"
+  },
+  "business_info": {
+    "title": "Business Information",
+    "subtitle": "How do you want to invoice?",
+    "business_type": "Business Type",
+    "particular": "Individual",
+    "particular_description": "I invoice with my personal tax ID (DNI/RUT)",
+    "business": "Business",
+    "business_description": "I have a business and invoice with a business tax ID",
+    "business_name": "Business Name (*)",
+    "business_name_placeholder": "Enter your business name",
+    "business_tax_id": "Business Tax ID",
+    "business_tax_id_placeholder": "Enter your business tax ID",
+    "particular_note": "You will use your personal tax ID: {{taxId}}"
+  },
+  "validation": {
+    "full_name_required": "Full name is required",
+    "tax_id_required": "Tax ID is required",
+    "country_required": "Country of origin is required",
+    "business_name_required": "Business name is required",
+    "business_tax_id_required": "Business tax ID is required"
+  },
+  "phone_label": "Phone Number",
+  "phone_description": "This number will be shared with potential renters to contact you about your campers",
+  "accept_checkbox": "I understand and accept the terms of the platform",
+  "submit": "Become a Host",
+  "submitting": "Processing...",
+  "confirm": "Confirm",
+  "success": "Success",
+  "welcome_message": "Welcome to RootsCampers! Your host account has been created.",
+  "error": "Error",
+  "accept_terms": "Please accept the terms to continue",
+  "invalid_phone": "Please enter a valid phone number",
+  "tooltip": {
+    "submitting": "Please wait while we process your request",
+    "phone_error": "Please fix the phone number error",
+    "no_phone": "Please enter your phone number",
+    "not_accepted": "Please accept the terms to continue"
+  },
+  "required_fields": "(*) Required fields"
+}

@@ -1,0 +1,25 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "save": "Save",
+    "saving": "Saving...",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "remove": "Remove",
+    "submitting": "Submitting...",
+    "loading": "Loading...",
+    "home": "Home",
+    "dismiss": "Dismiss",
+    "edit": "Edit",
+    "delete": "Delete",
+    "day": "Day",
+    "days": "Days",
+    "close": "Close",
+    "continue": "Continue",
+    "status": "Status",
+    "success": "Success",
+    "error": "Error"
+  }
+}

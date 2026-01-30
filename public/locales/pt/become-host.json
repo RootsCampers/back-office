@@ -1,0 +1,69 @@
+{
+  "title": "Torne-se um Anfitrião",
+  "steps": {
+    "terms": "Termos",
+    "personal": "Info Pessoal",
+    "business": "Info Comercial"
+  },
+  "consent": {
+    "title": "Termos da Plataforma",
+    "point1": "RootsCampers é um mercado para viajantes encontrarem campers de proprietários",
+    "point2": "RootsCampers apenas fornece a plataforma para compartilhar, exibir, gerenciar e contatar proprietários e locatários",
+    "point3": "Qualquer negócio realizado aqui é de responsabilidade exclusiva do proprietário do camper e do locatário",
+    "point4": "RootsCampers oferece as ferramentas, plataforma e parcerias para ajudar VOCÊ a fazer isso com segurança, facilidade e tecnologia"
+  },
+  "personal_info": {
+    "title": "Informações Pessoais",
+    "subtitle": "Conte-nos sobre você",
+    "full_name": "Nome Completo (*)",
+    "full_name_placeholder": "Digite seu nome completo",
+    "birth_date": "Data de Nascimento",
+    "tax_id": "CPF / RG / Documento (*)",
+    "tax_id_placeholder": "Digite seu CPF ou documento",
+    "country": "País de Origem (*)",
+    "select_country": "Selecione seu país de origem",
+    "languages": "Idiomas",
+    "select_language": "Selecionar idioma",
+    "select_level": "Selecionar nível",
+    "add_language": "Adicionar Idioma"
+  },
+  "business_info": {
+    "title": "Informações Comerciais",
+    "subtitle": "Como você quer faturar?",
+    "business_type": "Tipo de Negócio",
+    "particular": "Pessoa Física",
+    "particular_description": "Faturo com meu CPF pessoal",
+    "business": "Empresa",
+    "business_description": "Tenho uma empresa e faturo com CNPJ",
+    "business_name": "Nome da Empresa (*)",
+    "business_name_placeholder": "Digite o nome da sua empresa",
+    "business_tax_id": "CNPJ (*)",
+    "business_tax_id_placeholder": "Digite o CNPJ da sua empresa",
+    "particular_note": "Você usará seu CPF pessoal: {{taxId}}"
+  },
+  "validation": {
+    "full_name_required": "Nome completo é obrigatório",
+    "tax_id_required": "CPF/Documento é obrigatório",
+    "country_required": "País de origem é obrigatório",
+    "business_name_required": "Nome da empresa é obrigatório",
+    "business_tax_id_required": "CNPJ é obrigatório"
+  },
+  "phone_label": "Número de Telefone",
+  "phone_description": "Este número será compartilhado com possíveis locatários para contatá-lo sobre seus campers",
+  "accept_checkbox": "Eu entendo e aceito os termos da plataforma",
+  "submit": "Tornar-me Anfitrião",
+  "submitting": "Processando...",
+  "confirm": "Confirmar",
+  "success": "Sucesso",
+  "welcome_message": "Bem-vindo ao RootsCampers! Sua conta de anfitrião foi criada.",
+  "error": "Erro",
+  "accept_terms": "Por favor aceite os termos para continuar",
+  "invalid_phone": "Por favor insira um número de telefone válido",
+  "tooltip": {
+    "submitting": "Por favor aguarde enquanto processamos sua solicitação",
+    "phone_error": "Por favor corrija o erro do número de telefone",
+    "no_phone": "Por favor insira seu número de telefone",
+    "not_accepted": "Por favor aceite os termos para continuar"
+  },
+  "required_fields": "(*) Campos obrigatórios"
+}

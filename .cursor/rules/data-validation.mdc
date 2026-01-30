@@ -1,0 +1,131 @@
+---
+description: Zod and TypeScript patterns
+globs: types/**/*.ts, app/api/**/*.ts
+alwaysApply: false
+---
+
+# Types and Validations
+
+## Summary
+
+Defines patterns for types and validation with Zod and strict TypeScript. All types reside in `types/`, and API validations use Zod with safeParse. Reference [nextjs](mdc:.cursor/rules/nextjs.mdc) for API route structure and [security](mdc:.cursor/rules/security.mdc) for secure input validation.
+
+## Type location
+
+All types go in `types/`:
+
+```
+types/
+├── camper.ts           # Camper type
+├── fleet.ts            # Complete fleet
+├── pricing.ts          # Pricing configuration
+├── blocked-days.ts     # Blocked days
+├── blog-post.ts        # Blog posts
+├── locations.ts        # Locations
+└── index.ts            # Re-exports
+```
+
+## Type structure
+
+```ts
+// types/camper.ts
+type Camper = {
+  id: string;
+  name: string;
+  images: string[];
+  passengers: number;
+  vehicle_length: number;
+  type: string;
+  manufacturer: string;
+  model: string;
+  available_amenities?: string[];
+  advertising: {
+    price_per_day: number;
+    minimum_days: number;
+  };
+};
+
+export type { Camper };
+```
+
+## Strict TypeScript
+
+```ts
+// ✅ DO: Explicit types
+const campers: Camper[] = await fetchCampers();
+function calculatePrice(camper: Camper, days: number): number;
+
+// ❌ DON'T: any
+const campers: any = await fetchCampers();
+function calculatePrice(camper: any, days: any);
+```
+
+## Zod for API validation
+
+```ts
+import { z } from "zod";
+
+// Validation schema
+const BookingSchema = z.object({
+  camperId: z.string().uuid(),
+  startDate: z.string().datetime(),
+  endDate: z.string().datetime(),
+  extras: z.array(z.string()).optional(),
+});
+
+// In API route
+export async function POST(req: Request) {
+  const body = await req.json();
+  const result = BookingSchema.safeParse(body);
+
+  if (!result.success) {
+    return Response.json({ error: result.error.flatten() }, { status: 400 });
+  }
+
+  // result.data is correctly typed
+  const { camperId, startDate } = result.data;
+}
+```
+
+## Infer types from Zod
+
+```ts
+const UserSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  name: z.string().min(2),
+});
+
+// Infer the type from the schema
+type User = z.infer<typeof UserSchema>;
+```
+
+## Component props
+
+```ts
+// ✅ DO: Interface for complex props
+interface CamperCardProps {
+  camper: Camper;
+  onSelect?: (id: string) => void;
+  className?: string;
+}
+
+export const CamperCard = ({
+  camper,
+  onSelect,
+  className,
+}: CamperCardProps) => {
+  // ...
+};
+
+// ✅ Also valid: inline type for simple props
+export const Badge = ({
+  label,
+  variant = "default",
+}: {
+  label: string;
+  variant?: "default" | "success" | "warning";
+}) => {
+  // ...
+};
+```
