@@ -1,6 +1,7 @@
 {
-    "name": "rootscampers",
+    "name": "rootscampers-backoffice",
     "version": "0.1.0",
+    "description": "Internal back-office admin tool for the RootsCampers team",
     "private": true,
     "scripts": {
         "dev": "NODE_ENV=development next dev",
