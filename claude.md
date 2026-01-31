@@ -81,16 +81,56 @@ Finance
 
 ---
 
+## Pre-Commit Hooks (Automated)
+
+This project uses **Husky + lint-staged** to automatically run checks before commits.
+
+### What Runs Automatically on `git commit`
+
+1. **ESLint** (via lint-staged) - Lints only staged `.ts/.tsx` files with auto-fix
+2. **TypeScript type-check** - Currently disabled due to pre-existing errors (see below)
+
+If the lint check fails, the commit is blocked. Fix the issues and try again.
+
+### Known Issues (Pre-existing TypeScript Errors)
+
+The following files have TypeScript errors that need to be fixed before enabling full type-checking in pre-commit:
+
+- `components/SuspenseProviders.tsx` - Missing `@/hooks/usePageTracking`
+- `components/ui/calendar.tsx` - Missing `@/types/date`
+- `components/VehicleSelector.tsx` - Missing `@/types/vehicles`, implicit any
+- `modules/locations/components/LocationsSelector.tsx` - Missing `@/types/locations`, implicit any
+- `modules/vehicles/components/VehicleCard.tsx` - Missing `@/utils/vehicle-translations`
+- `modules/vehicles/components/VehicleFleetCard.tsx` - Multiple missing modules
+
+Once these are fixed, uncomment `npm run typecheck` in `.husky/pre-commit`.
+
+### Bypass (Emergency Only)
+
+```bash
+git commit --no-verify -m "message"
+```
+
+Use sparingly. CI will still catch errors on push.
+
+### Setup (After Clone)
+
+```bash
+npm install  # Husky auto-installs via "prepare" script
+```
+
+---
+
 ## Pre-Push Checklist (MANDATORY)
 
-Before every commit/push, the agent MUST run these checks in order:
+Before pushing, verify these checks pass:
 
 ```bash
 # 1. TypeScript - must pass with 0 errors
-npx tsc --noEmit
+npm run typecheck
 
 # 2. Lint - check for errors (warnings are acceptable)
-npx next lint --dir app --dir components --dir hooks --dir modules
+npm run lint:staged
 ```
 
 **Both checks must pass before pushing.** If any check fails:
@@ -395,10 +435,13 @@ try {
 npm run dev
 
 # Type check
-npx tsc --noEmit
+npm run typecheck
 
-# Lint
-npx next lint
+# Lint all directories
+npm run lint
+
+# Lint staged files only (used by pre-commit)
+npm run lint:staged
 ```
 
 ---
