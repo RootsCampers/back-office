@@ -1,4 +1,4 @@
-// CRM Module - Traveler Booking Funnel Management
+// {Domain} Module - {Description}
 // Following standard module structure per CLAUDE.md
 
 export * from "./components";

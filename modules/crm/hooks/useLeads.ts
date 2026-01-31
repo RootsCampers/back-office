@@ -1,8 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+// Type imports from own module
 import type { Lead, LeadStage } from "../domain/types";
+
+// Implementation imports from own module
 import { createLeadService } from "../services";
+
+// External library imports
+import { useState, useEffect, useCallback } from "react";
 
 interface UseLeadsReturn {
   leads: Record<LeadStage, Lead[]>;
@@ -14,6 +19,7 @@ interface UseLeadsReturn {
 
 /**
  * Hook to manage leads data with Kanban-style grouping.
+ * Provides optimistic updates for drag-and-drop operations.
  */
 export function useLeads(): UseLeadsReturn {
   const [leads, setLeads] = useState<Record<LeadStage, Lead[]>>({
@@ -60,7 +66,11 @@ export function useLeads(): UseLeadsReturn {
 
         // Add lead to new stage
         if (movedLead) {
-          movedLead = { ...movedLead, stage: newStage, updatedAt: new Date().toISOString() };
+          movedLead = {
+            ...movedLead,
+            stage: newStage,
+            updatedAt: new Date().toISOString(),
+          };
           newLeads[newStage] = [movedLead, ...newLeads[newStage]];
         }
 

@@ -1,6 +1,9 @@
-import type { Lead, LeadStage, CreateLeadData, UpdateLeadData } from "../domain/types";
+// Type imports from own module (alphabetical)
 import type { ILeadService } from "./ILeadService";
 import type { ILeadRepository } from "../repositories/ILeadRepository";
+import type { CreateLeadData, Lead, LeadStage, UpdateLeadData } from "../domain/types";
+
+// Implementation imports from own module
 import { createLeadRepository } from "../repositories";
 
 /**
@@ -35,7 +38,8 @@ export class LeadService implements ILeadService {
     // Sort leads within each stage by updatedAt (most recent first)
     for (const stage of Object.keys(grouped) as LeadStage[]) {
       grouped[stage].sort(
-        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
     }
 

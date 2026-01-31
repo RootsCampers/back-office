@@ -132,30 +132,132 @@ const { user, isAuthenticated, isLoading, signOut } = useAuth();
 
 ---
 
-## Module Structure (Service/Repository Pattern)
+## Module Structure (STANDARD)
 
-For new features, follow the layered architecture:
+Every feature module MUST follow this exact structure:
 
 ```
 modules/{domain}/
+├── components/                    # Domain-specific UI components
+│   ├── index.ts                   # Named exports only
+│   ├── {Feature}Card.tsx          # Presentational component
+│   └── {Feature}Board.tsx         # Container component
 ├── domain/
-│   ├── index.ts          # Re-exports
-│   └── types.ts          # TypeScript types/interfaces
-├── repositories/
-│   ├── index.ts          # Re-exports
-│   ├── I{Domain}Repository.ts  # Interface
-│   ├── {Domain}Repository.ts   # API implementation
-│   └── Mock{Domain}Repository.ts  # Mock for development
-├── services/
-│   ├── index.ts          # Re-exports
-│   ├── I{Domain}Service.ts     # Interface
-│   └── {Domain}Service.ts      # Implementation
+│   ├── index.ts                   # export * from "./types"
+│   └── types.ts                   # TypeScript types/interfaces
 ├── hooks/
-│   └── use{Domain}.ts    # React hooks
-└── components/           # Domain-specific components
+│   ├── index.ts                   # export { use{Feature} } from "./use{Feature}"
+│   └── use{Feature}.ts            # React hooks for data fetching/state
+├── repositories/
+│   ├── index.ts                   # Factory function + re-exports
+│   ├── I{Domain}Repository.ts     # Interface definition
+│   ├── {Domain}Repository.ts      # API implementation (for rootend)
+│   └── Mock{Domain}Repository.ts  # Mock implementation (for development)
+├── services/
+│   ├── index.ts                   # Factory function + re-exports
+│   ├── I{Domain}Service.ts        # Interface definition
+│   └── {Domain}Service.ts         # Business logic implementation
+├── validators/                    # Optional: if validating API responses
+│   ├── index.ts                   # export * from "./{Domain}Schema"
+│   └── {Domain}Schema.ts          # Zod schemas
+└── index.ts                       # Module barrel export
 ```
 
-### Mock Data Pattern
+### Module Index File Pattern
+
+Every module's root `index.ts` MUST export all subdirectories:
+
+```typescript
+// modules/{domain}/index.ts
+export * from "./components";
+export * from "./domain";
+export * from "./hooks";
+export * from "./repositories";
+export * from "./services";
+// export * from "./validators"; // if exists
+```
+
+---
+
+## Naming Conventions (STRICT)
+
+### File Naming
+
+| Purpose | Pattern | Example |
+|---------|---------|---------|
+| Types file | `types.ts` | `domain/types.ts` |
+| Service interface | `I{Domain}Service.ts` | `ILeadService.ts` |
+| Service implementation | `{Domain}Service.ts` | `LeadService.ts` |
+| Repository interface | `I{Domain}Repository.ts` | `ILeadRepository.ts` |
+| Repository implementation | `{Domain}Repository.ts` | `LeadRepository.ts` |
+| Mock repository | `Mock{Domain}Repository.ts` | `MockLeadRepository.ts` |
+| React hook | `use{Feature}.ts` | `useLeads.ts` |
+| Zod schema | `{Domain}Schema.ts` | `LeadSchema.ts` |
+| Presentational component | `{Feature}Card.tsx` | `LeadCard.tsx` |
+| Container component | `{Feature}Board.tsx` | `KanbanBoard.tsx` |
+
+### Interface Naming
+
+- Service interfaces: `I{Domain}Service` (singular) - e.g., `ILeadService`
+- Repository interfaces: `I{Domain}Repository` (singular) - e.g., `ILeadRepository`
+
+### Export Patterns
+
+**Services index.ts:**
+```typescript
+export type { ILeadService } from "./ILeadService";
+export { LeadService, createLeadService } from "./LeadService";
+```
+
+**Repositories index.ts:**
+```typescript
+export type { ILeadRepository } from "./ILeadRepository";
+export { createLeadRepository } from "./MockLeadRepository";
+// Future: export { createLeadRepository } from "./LeadRepository";
+```
+
+**Components index.ts:**
+```typescript
+// Use NAMED exports, not export *
+export { LeadCard } from "./LeadCard";
+export { KanbanBoard } from "./KanbanBoard";
+```
+
+---
+
+## Import Order (STRICT)
+
+All files MUST follow this import order:
+
+```typescript
+// 1. Type imports from own module
+import type { ILeadService } from "./ILeadService";
+import type { ILeadRepository } from "../repositories/ILeadRepository";
+import type { Lead, LeadStage } from "../domain/types";
+
+// 2. Implementation imports from own module
+import { createLeadRepository } from "../repositories";
+import { validateLeadData } from "../validators";
+
+// 3. Imports from other modules
+import { useAuth } from "@/modules/auth/hooks";
+
+// 4. Shared library imports
+import { cn } from "@/lib/utils";
+import { ApiError } from "@/lib/api/errors";
+
+// 5. UI component imports
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+// 6. External library imports
+import { useState, useCallback } from "react";
+import { DragDropContext } from "@hello-pangea/dnd";
+```
+
+---
+
+## Mock Data Pattern
 
 For features not yet connected to rootend, use mock repositories:
 
@@ -184,6 +286,8 @@ export class LeadRepository implements ILeadRepository {
 import { MockLeadRepository } from "./MockLeadRepository";
 // import { LeadRepository } from "./LeadRepository";
 
+export type { ILeadRepository } from "./ILeadRepository";
+
 // Swap implementation when rootend endpoints are ready
 export function createLeadRepository(): ILeadRepository {
   return new MockLeadRepository();
@@ -211,7 +315,7 @@ const data = await apiFetchData<MyType>("/api/endpoint", {
 
 ## Component Patterns
 
-### UI Components
+### UI Components (Shared)
 
 Located in `components/ui/` - Radix UI based:
 - Button, Input, Label, Card, Dialog
@@ -220,14 +324,23 @@ Located in `components/ui/` - Radix UI based:
 
 ### Layout Components
 
-- `components/layout/Sidebar.tsx` - Main navigation
-- `components/layout/DashboardLayout.tsx` - Authenticated layout wrapper
+Located in `components/layout/`:
+- `Sidebar.tsx` - Main navigation
+- `DashboardLayout.tsx` - Authenticated layout wrapper
 
 ### Domain Components
 
 Located in `modules/{domain}/components/`:
 - Keep domain-specific components close to their module
 - Import shared UI from `components/ui/`
+- Use named exports in index.ts
+
+### Page Components
+
+Located in `app/[lng]/(dashboard)/`:
+- Use "use client" directive only when needed
+- Prefer server components when possible
+- Use hooks for client-side data fetching
 
 ---
 
@@ -236,8 +349,10 @@ Located in `modules/{domain}/components/`:
 - Use TailwindCSS utilities
 - Follow existing color scheme (HSL CSS variables)
 - Sidebar: dark background (`bg-slate-900`)
-- Content area: light background (`bg-background`)
+- Content area: light background (`bg-slate-50` or `bg-background`)
+- Cards: white background (`bg-white`) with border
 - Consistent spacing: `p-4`, `p-6` for containers
+- Use `cn()` from `@/lib/utils` for conditional classes
 
 ---
 
@@ -265,9 +380,11 @@ try {
 | `app/[lng]/layout.tsx` | Root layout |
 | `app/[lng]/(dashboard)/layout.tsx` | Dashboard layout with sidebar |
 | `components/layout/Sidebar.tsx` | Navigation sidebar |
+| `components/layout/DashboardLayout.tsx` | Auth-protected wrapper |
 | `modules/auth/hooks/useAuth.ts` | Auth state hook |
 | `modules/crm/` | CRM module (leads, funnels) |
 | `lib/api/client.ts` | API client for rootend |
+| `lib/utils.ts` | Utility functions (cn, etc.) |
 
 ---
 
