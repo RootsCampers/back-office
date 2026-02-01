@@ -1,9 +1,20 @@
-// Type imports from own module (alphabetical)
+// Type imports from own module
 import type { ILeadService } from "./ILeadService";
-import type { ILeadRepository } from "../repositories/ILeadRepository";
-import type { CreateLeadData, Lead, LeadStage, UpdateLeadData } from "../domain/types";
+import type { ILeadRepository, ListLeadsParams } from "../repositories/ILeadRepository";
+import type {
+  Lead,
+  LeadStage,
+  CreateLeadData,
+  UpdateLeadData,
+  LeadStageUpdateData,
+  LeadConvertData,
+  LeadStatusHistory,
+  LeadStats,
+  LeadListResponse,
+} from "../domain/types";
 
 // Implementation imports from own module
+import { LEAD_STAGES } from "../domain/types";
 import { createLeadRepository } from "../repositories";
 
 /**
@@ -13,22 +24,21 @@ import { createLeadRepository } from "../repositories";
 export class LeadService implements ILeadService {
   constructor(private readonly repository: ILeadRepository) {}
 
-  async getLeads(): Promise<Lead[]> {
-    return this.repository.getAll();
+  async listLeads(params?: ListLeadsParams): Promise<LeadListResponse> {
+    return this.repository.list(params);
   }
 
   async getLeadsGroupedByStage(): Promise<Record<LeadStage, Lead[]>> {
-    const leads = await this.repository.getAll();
+    const { leads } = await this.repository.list({ limit: 1000 });
 
     // Initialize all stages with empty arrays
-    const grouped: Record<LeadStage, Lead[]> = {
-      new_inquiry: [],
-      contacted: [],
-      quote_sent: [],
-      negotiating: [],
-      booked: [],
-      lost: [],
-    };
+    const grouped: Record<LeadStage, Lead[]> = LEAD_STAGES.reduce(
+      (acc, stage) => {
+        acc[stage] = [];
+        return acc;
+      },
+      {} as Record<LeadStage, Lead[]>
+    );
 
     // Group leads by stage
     for (const lead of leads) {
@@ -36,7 +46,7 @@ export class LeadService implements ILeadService {
     }
 
     // Sort leads within each stage by updatedAt (most recent first)
-    for (const stage of Object.keys(grouped) as LeadStage[]) {
+    for (const stage of LEAD_STAGES) {
       grouped[stage].sort(
         (a, b) =>
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -58,12 +68,24 @@ export class LeadService implements ILeadService {
     return this.repository.update(id, data);
   }
 
-  async moveLeadToStage(id: string, stage: LeadStage): Promise<Lead> {
-    return this.repository.updateStage(id, stage);
+  async moveLeadToStage(id: string, data: LeadStageUpdateData): Promise<Lead> {
+    return this.repository.updateStage(id, data);
+  }
+
+  async convertLead(id: string, data: LeadConvertData): Promise<Lead> {
+    return this.repository.convert(id, data);
   }
 
   async deleteLead(id: string): Promise<void> {
     return this.repository.delete(id);
+  }
+
+  async getLeadStats(): Promise<LeadStats> {
+    return this.repository.getStats();
+  }
+
+  async getLeadHistory(id: string): Promise<LeadStatusHistory[]> {
+    return this.repository.getHistory(id);
   }
 }
 

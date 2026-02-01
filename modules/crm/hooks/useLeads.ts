@@ -1,9 +1,10 @@
 "use client";
 
 // Type imports from own module
-import type { Lead, LeadStage } from "../domain/types";
+import type { Lead, LeadStage, LeadStageUpdateData } from "../domain/types";
 
 // Implementation imports from own module
+import { LEAD_STAGES } from "../domain/types";
 import { createLeadService } from "../services";
 
 // External library imports
@@ -14,7 +15,7 @@ interface UseLeadsReturn {
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
-  moveLeadToStage: (leadId: string, newStage: LeadStage) => Promise<void>;
+  moveLeadToStage: (leadId: string, newStage: LeadStage, lostReason?: string) => Promise<void>;
 }
 
 /**
@@ -22,14 +23,15 @@ interface UseLeadsReturn {
  * Provides optimistic updates for drag-and-drop operations.
  */
 export function useLeads(): UseLeadsReturn {
-  const [leads, setLeads] = useState<Record<LeadStage, Lead[]>>({
-    new_inquiry: [],
-    contacted: [],
-    quote_sent: [],
-    negotiating: [],
-    booked: [],
-    lost: [],
-  });
+  const [leads, setLeads] = useState<Record<LeadStage, Lead[]>>(
+    LEAD_STAGES.reduce(
+      (acc, stage) => {
+        acc[stage] = [];
+        return acc;
+      },
+      {} as Record<LeadStage, Lead[]>
+    )
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,14 +51,14 @@ export function useLeads(): UseLeadsReturn {
   }, []);
 
   const moveLeadToStage = useCallback(
-    async (leadId: string, newStage: LeadStage) => {
+    async (leadId: string, newStage: LeadStage, lostReason?: string) => {
       // Optimistic update
       setLeads((prevLeads) => {
         const newLeads = { ...prevLeads };
 
         // Find and remove lead from current stage
         let movedLead: Lead | undefined;
-        for (const stage of Object.keys(newLeads) as LeadStage[]) {
+        for (const stage of LEAD_STAGES) {
           const index = newLeads[stage].findIndex((l) => l.id === leadId);
           if (index !== -1) {
             [movedLead] = newLeads[stage].splice(index, 1);
@@ -66,10 +68,13 @@ export function useLeads(): UseLeadsReturn {
 
         // Add lead to new stage
         if (movedLead) {
+          const now = new Date().toISOString();
           movedLead = {
             ...movedLead,
             stage: newStage,
-            updatedAt: new Date().toISOString(),
+            stageChangedAt: now,
+            updatedAt: now,
+            lostReason: newStage === "lost" ? lostReason : movedLead.lostReason,
           };
           newLeads[newStage] = [movedLead, ...newLeads[newStage]];
         }
@@ -80,7 +85,11 @@ export function useLeads(): UseLeadsReturn {
       // Persist change
       try {
         const service = createLeadService();
-        await service.moveLeadToStage(leadId, newStage);
+        const stageUpdateData: LeadStageUpdateData = {
+          stage: newStage,
+          lostReason: newStage === "lost" ? lostReason : undefined,
+        };
+        await service.moveLeadToStage(leadId, stageUpdateData);
       } catch (err) {
         console.error("Failed to move lead:", err);
         // Revert on error
