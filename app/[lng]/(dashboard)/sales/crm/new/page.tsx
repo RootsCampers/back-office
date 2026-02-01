@@ -20,18 +20,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // 4. External library imports
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import Link from "next/link";
+
+/**
+ * Converts datetime-local value (YYYY-MM-DDTHH:MM) to ISO8601 format
+ * by appending seconds and timezone info.
+ */
+function toISO8601(datetimeLocal: string): string {
+  // datetime-local gives us "YYYY-MM-DDTHH:MM", we need "YYYY-MM-DDTHH:MM:SS.000Z"
+  return new Date(datetimeLocal).toISOString();
+}
 
 export default function AddLeadPage() {
   const router = useRouter();
   const accessToken = useAccessToken();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [createdLeadName, setCreatedLeadName] = useState("");
 
   const [formData, setFormData] = useState<CreateLeadData>({
     name: "",
@@ -55,6 +74,24 @@ export default function AddLeadPage() {
     }));
   };
 
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: undefined,
+      phone: undefined,
+      stage: "new_inquiry",
+      source: undefined,
+      sourceDetail: undefined,
+      tripStartDate: undefined,
+      tripEndDate: undefined,
+      destination: undefined,
+      travelersCount: undefined,
+      notes: undefined,
+      nextFollowUpAt: undefined,
+    });
+    setError(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -73,14 +110,35 @@ export default function AddLeadPage() {
 
     try {
       const service = createLeadService(accessToken);
-      await service.createLead(formData);
-      router.push("/en/sales/crm");
+
+      // Prepare data with proper date format conversion
+      const submitData: CreateLeadData = {
+        ...formData,
+        // Convert datetime-local to ISO8601 if present
+        nextFollowUpAt: formData.nextFollowUpAt
+          ? toISO8601(formData.nextFollowUpAt)
+          : undefined,
+      };
+
+      await service.createLead(submitData);
+      setCreatedLeadName(formData.name);
+      setShowSuccessDialog(true);
     } catch (err) {
       console.error("Failed to create lead:", err);
       setError(err instanceof Error ? err.message : "Failed to create lead");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleCreateAnother = () => {
+    setShowSuccessDialog(false);
+    resetForm();
+  };
+
+  const handleGoToLeads = () => {
+    setShowSuccessDialog(false);
+    router.push("/en/sales/crm");
   };
 
   return (
@@ -293,6 +351,30 @@ export default function AddLeadPage() {
           </div>
         </form>
       </div>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              Lead Created Successfully
+            </DialogTitle>
+            <DialogDescription>
+              <strong>{createdLeadName}</strong> has been added to your CRM.
+              What would you like to do next?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 sm:gap-0">
+            <Button variant="outline" onClick={handleCreateAnother}>
+              Create Another Lead
+            </Button>
+            <Button onClick={handleGoToLeads}>
+              Go to Leads
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
