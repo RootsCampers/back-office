@@ -1,11 +1,16 @@
 "use client";
 
-import { RefreshCw, Plus } from "lucide-react";
-import Link from "next/link";
+// 1. Imports from modules
 import { useLeads } from "@/modules/crm/hooks";
 import { KanbanBoard } from "@/modules/crm/components";
+
+// 2. UI component imports
 import { Button } from "@/components/ui/button";
 import { PageLoader } from "@/components/ui/page-loader";
+
+// 3. External library imports
+import { RefreshCw, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function SalesCRMPage() {
   const { leads, isLoading, error, refetch, moveLeadToStage } = useLeads();

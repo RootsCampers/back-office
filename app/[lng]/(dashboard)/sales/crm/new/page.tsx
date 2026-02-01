@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import Link from "next/link";
-
+// 1. Type imports from modules
 import type { CreateLeadData, LeadSource, LeadStage } from "@/modules/crm/domain/types";
+
+// 2. Implementation imports from modules
 import { LEAD_SOURCES, LEAD_SOURCE_LABELS, LEAD_STAGES, LEAD_STAGE_CONFIG } from "@/modules/crm/domain/types";
 import { createLeadService } from "@/modules/crm/services";
 import { useAccessToken } from "@/modules/auth/hooks";
 
+// 3. UI component imports
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+// 4. External library imports
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 export default function AddLeadPage() {
   const router = useRouter();

@@ -1,15 +1,16 @@
 "use client";
 
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  type DropResult,
-} from "@hello-pangea/dnd";
+// 1. Type imports from own module
 import type { Lead, LeadStage } from "../domain/types";
+
+// 2. Implementation imports from own module
 import { LEAD_STAGES, LEAD_STAGE_CONFIG } from "../domain/types";
 import { LeadCard } from "./LeadCard";
+
+// 3. Shared library imports
 import { cn } from "@/lib/utils";
+
+// 4. UI component imports
 import {
   Dialog,
   DialogContent,
@@ -21,7 +22,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+
+// 5. External library imports
 import { useState } from "react";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  type DropResult,
+} from "@hello-pangea/dnd";
 
 interface KanbanBoardProps {
   leads: Record<LeadStage, Lead[]>;
