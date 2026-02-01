@@ -29,7 +29,9 @@ export class LeadService implements ILeadService {
   }
 
   async getLeadsGroupedByStage(): Promise<Record<LeadStage, Lead[]>> {
-    const { leads } = await this.repository.list({ limit: 1000 });
+    // Backend caps at 100, so we use that limit
+    // For larger datasets, pagination would be needed
+    const { leads } = await this.repository.list({ limit: 100 });
 
     // Initialize all stages with empty arrays
     const grouped: Record<LeadStage, Lead[]> = LEAD_STAGES.reduce(
