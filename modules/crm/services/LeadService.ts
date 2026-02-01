@@ -91,8 +91,9 @@ export class LeadService implements ILeadService {
 
 /**
  * Factory function to create a lead service.
+ * Requires authentication token for API calls.
  */
-export function createLeadService(): ILeadService {
-  const repository = createLeadRepository();
+export function createLeadService(token: string): ILeadService {
+  const repository = createLeadRepository(token);
   return new LeadService(repository);
 }

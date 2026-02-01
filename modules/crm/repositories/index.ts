@@ -1,15 +1,13 @@
 import type { ILeadRepository } from "./ILeadRepository";
-import { MockLeadRepository } from "./MockLeadRepository";
-// import { LeadRepository } from "./LeadRepository"; // Future: API implementation
+import { LeadRepository } from "./LeadRepository";
 
 export type { ILeadRepository } from "./ILeadRepository";
+export type { ListLeadsParams } from "./ILeadRepository";
 
 /**
  * Factory function to create a lead repository.
- * Swap implementation here when rootend endpoints are ready.
+ * Requires authentication token for API calls.
  */
-export function createLeadRepository(): ILeadRepository {
-  // TODO: When rootend endpoints are ready, swap to:
-  // return new LeadRepository();
-  return new MockLeadRepository();
+export function createLeadRepository(token: string): ILeadRepository {
+  return new LeadRepository(token);
 }
