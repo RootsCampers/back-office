@@ -1,6 +1,7 @@
 "use client";
 
 import { RefreshCw, Plus } from "lucide-react";
+import Link from "next/link";
 import { useLeads } from "@/modules/crm/hooks";
 import { KanbanBoard } from "@/modules/crm/components";
 import { Button } from "@/components/ui/button";
@@ -51,10 +52,12 @@ export default function SalesCRMPage() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
-          <Button size="sm">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Lead
-          </Button>
+          <Link href="/en/sales/crm/new">
+            <Button size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Lead
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -86,8 +89,8 @@ export default function SalesCRMPage() {
       <div className="bg-white rounded-lg border p-4">
         <KanbanBoard
           leads={leads}
-          onMoveLeadToStage={(leadId, newStage) => {
-            moveLeadToStage(leadId, newStage);
+          onMoveLeadToStage={(leadId, newStage, lostReason) => {
+            moveLeadToStage(leadId, newStage, lostReason);
           }}
         />
       </div>

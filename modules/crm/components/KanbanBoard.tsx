@@ -10,13 +10,33 @@ import type { Lead, LeadStage } from "../domain/types";
 import { LEAD_STAGES, LEAD_STAGE_CONFIG } from "../domain/types";
 import { LeadCard } from "./LeadCard";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 interface KanbanBoardProps {
   leads: Record<LeadStage, Lead[]>;
-  onMoveLeadToStage: (leadId: string, newStage: LeadStage) => void;
+  onMoveLeadToStage: (leadId: string, newStage: LeadStage, lostReason?: string) => void;
+}
+
+interface PendingLostMove {
+  leadId: string;
+  leadName: string;
 }
 
 export function KanbanBoard({ leads, onMoveLeadToStage }: KanbanBoardProps) {
+  const [pendingLostMove, setPendingLostMove] = useState<PendingLostMove | null>(null);
+  const [lostReason, setLostReason] = useState("");
+
   const handleDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
 
@@ -33,10 +53,41 @@ export function KanbanBoard({ leads, onMoveLeadToStage }: KanbanBoardProps) {
 
     // Move to new stage
     const newStage = destination.droppableId as LeadStage;
+
+    // If moving to "lost" stage, prompt for reason
+    if (newStage === "lost") {
+      // Find the lead to get its name for the dialog
+      let leadName = "this lead";
+      for (const stage of LEAD_STAGES) {
+        const lead = leads[stage].find((l) => l.id === draggableId);
+        if (lead) {
+          leadName = lead.name;
+          break;
+        }
+      }
+      setPendingLostMove({ leadId: draggableId, leadName });
+      setLostReason("");
+      return;
+    }
+
     onMoveLeadToStage(draggableId, newStage);
   };
 
+  const handleConfirmLost = () => {
+    if (pendingLostMove) {
+      onMoveLeadToStage(pendingLostMove.leadId, "lost", lostReason || undefined);
+      setPendingLostMove(null);
+      setLostReason("");
+    }
+  };
+
+  const handleCancelLost = () => {
+    setPendingLostMove(null);
+    setLostReason("");
+  };
+
   return (
+    <>
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="flex gap-4 overflow-x-auto pb-4">
         {LEAD_STAGES.map((stage) => {
@@ -119,5 +170,37 @@ export function KanbanBoard({ leads, onMoveLeadToStage }: KanbanBoardProps) {
         })}
       </div>
     </DragDropContext>
+
+      {/* Lost Reason Dialog */}
+      <Dialog open={pendingLostMove !== null} onOpenChange={(open) => !open && handleCancelLost()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Mark Lead as Lost</DialogTitle>
+            <DialogDescription>
+              You are marking <strong>{pendingLostMove?.leadName}</strong> as lost.
+              Please provide a reason to help track why this lead was lost.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="lostReason">Reason for losing this lead (optional)</Label>
+            <Textarea
+              id="lostReason"
+              placeholder="e.g., Budget constraints, chose competitor, trip cancelled..."
+              value={lostReason}
+              onChange={(e) => setLostReason(e.target.value)}
+              rows={3}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelLost}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmLost}>
+              Mark as Lost
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
