@@ -1,0 +1,6 @@
+# TypeScript type check - disabled until pre-existing errors are fixed
+# TODO: Uncomment once modules/vehicles, modules/locations, and components errors are resolved
+# npm run typecheck
+
+# Run lint-staged on staged files
+npx lint-staged
