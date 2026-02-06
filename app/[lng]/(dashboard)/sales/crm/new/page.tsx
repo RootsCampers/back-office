@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import {
   Select,
   SelectContent,
@@ -30,8 +31,10 @@ import {
 } from "@/components/ui/dialog";
 
 // 4. External library imports
+import type { DateRange } from "@/types/date";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 import { ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
@@ -264,26 +267,32 @@ export default function AddLeadPage() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-slate-900">Trip Details</h2>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="tripStartDate">Trip Start Date</Label>
-                <Input
-                  id="tripStartDate"
-                  type="date"
-                  value={formData.tripStartDate || ""}
-                  onChange={(e) => handleInputChange("tripStartDate", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="tripEndDate">Trip End Date</Label>
-                <Input
-                  id="tripEndDate"
-                  type="date"
-                  value={formData.tripEndDate || ""}
-                  onChange={(e) => handleInputChange("tripEndDate", e.target.value)}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label>Trip Dates</Label>
+              <DateRangePicker
+                dateRange={
+                  formData.tripStartDate
+                    ? {
+                        from: new Date(formData.tripStartDate + "T00:00:00"),
+                        to: formData.tripEndDate
+                          ? new Date(formData.tripEndDate + "T00:00:00")
+                          : undefined,
+                      }
+                    : undefined
+                }
+                onSelect={(range: DateRange | undefined) => {
+                  handleInputChange(
+                    "tripStartDate",
+                    range?.from ? format(range.from, "yyyy-MM-dd") : undefined,
+                  );
+                  handleInputChange(
+                    "tripEndDate",
+                    range?.to ? format(range.to, "yyyy-MM-dd") : undefined,
+                  );
+                }}
+                placeholder="Select trip dates"
+                numberOfMonths={1}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">

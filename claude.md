@@ -97,7 +97,6 @@ If the lint check fails, the commit is blocked. Fix the issues and try again.
 The following files have TypeScript errors that need to be fixed before enabling full type-checking in pre-commit:
 
 - `components/SuspenseProviders.tsx` - Missing `@/hooks/usePageTracking`
-- `components/ui/calendar.tsx` - Missing `@/types/date`
 - `components/VehicleSelector.tsx` - Missing `@/types/vehicles`, implicit any
 - `modules/locations/components/LocationsSelector.tsx` - Missing `@/types/locations`, implicit any
 - `modules/vehicles/components/VehicleCard.tsx` - Missing `@/utils/vehicle-translations`
