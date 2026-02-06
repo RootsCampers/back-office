@@ -54,6 +54,11 @@ const navigation: NavItem[] = [
         href: "/en/sales/crm",
         icon: <Kanban className="h-4 w-4" />,
       },
+      {
+        label: "Invite Traveler",
+        href: "/en/sales/invite",
+        icon: <UserPlus className="h-4 w-4" />,
+      },
     ],
   },
   {
