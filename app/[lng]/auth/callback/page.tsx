@@ -19,7 +19,7 @@ function AuthCallbackContent() {
         console.log("Processing OAuth callback...");
 
         // Decode state parameter to recover redirect info
-        let next = "/";
+        let next = "/dashboard";
         let lng = "en";
 
         const stateParam = searchParams.get("state");
