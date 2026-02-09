@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 import { createAuthService } from "@/modules/auth/services";
 import { ApiError } from "@/lib/api/errors";
 import { useAuth } from "@/modules/auth/hooks";
@@ -32,8 +33,17 @@ export const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const authService = createAuthService();
   const { setSession } = useAuth();
+
+  // Display errors passed via URL params (e.g. from OAuth callback)
+  useEffect(() => {
+    const urlError = searchParams.get("error");
+    if (urlError) {
+      setError(urlError);
+    }
+  }, [searchParams]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +71,35 @@ export const LoginForm = () => {
 
       if (err instanceof ApiError) {
         setError(err.message || "Invalid credentials");
+      } else {
+        setError("An error occurred. Please try again.");
+      }
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const state = btoa(
+        JSON.stringify({
+          next: "/dashboard",
+          lng: "en",
+        }),
+      );
+
+      const callbackUrl = `${window.location.origin}/en/auth/callback?state=${encodeURIComponent(state)}`;
+
+      await authService.signInWithOAuth({
+        provider: "google",
+        redirectTo: callbackUrl,
+      });
+    } catch (err) {
+      console.error("Google sign-in error:", err);
+      if (err instanceof ApiError) {
+        setError(err.message || "Failed to sign in with Google");
       } else {
         setError("An error occurred. Please try again.");
       }
@@ -143,6 +182,25 @@ export const LoginForm = () => {
             {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">OR</span>
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+        >
+          <FcGoogle className="mr-2 h-5 w-5" />
+          Sign in with Google
+        </Button>
       </CardContent>
     </Card>
   );

@@ -40,7 +40,7 @@ function AuthCallbackContent() {
         if (error) {
           console.error("OAuth error:", error, errorDescription);
           router.push(
-            `/${lng}/login?error=${encodeURIComponent(
+            `/${lng}/?error=${encodeURIComponent(
               errorDescription || error,
             )}`,
           );
@@ -51,7 +51,7 @@ function AuthCallbackContent() {
         const hash = window.location.hash.substring(1); // Remove #
         if (!hash) {
           console.error("No hash found in URL");
-          router.push(`/${lng}/login?error=No tokens found`);
+          router.push(`/${lng}/?error=No tokens found`);
           return;
         }
 
@@ -68,7 +68,7 @@ function AuthCallbackContent() {
             hashErrorDescription,
           );
           router.push(
-            `/${lng}/login?error=${encodeURIComponent(
+            `/${lng}/?error=${encodeURIComponent(
               hashErrorDescription || hashError,
             )}`,
           );
@@ -82,7 +82,7 @@ function AuthCallbackContent() {
 
         if (!accessToken || !refreshToken) {
           console.error("Missing tokens in hash");
-          router.push(`/${lng}/login?error=Missing tokens`);
+          router.push(`/${lng}/?error=Missing tokens`);
           return;
         }
 
@@ -90,7 +90,18 @@ function AuthCallbackContent() {
         const jwtPayload = decodeJWT(accessToken);
         if (!jwtPayload || !jwtPayload.sub || !jwtPayload.email) {
           console.error("Failed to decode JWT or missing user info");
-          router.push(`/${lng}/login?error=Invalid token`);
+          router.push(`/${lng}/?error=Invalid token`);
+          return;
+        }
+
+        // Validate email domain — only @rootscampers.com allowed
+        if (!jwtPayload.email.toLowerCase().endsWith("@rootscampers.com")) {
+          console.error("Unauthorized email domain:", jwtPayload.email);
+          router.push(
+            `/${lng}/?error=${encodeURIComponent(
+              "Access restricted to @rootscampers.com emails only",
+            )}`,
+          );
           return;
         }
 
@@ -165,7 +176,7 @@ function AuthCallbackContent() {
         router.push(
           `/${
             searchParams.get("lng") || "en"
-          }/login?error=Something went wrong`,
+          }/?error=Something went wrong`,
         );
       }
     };
