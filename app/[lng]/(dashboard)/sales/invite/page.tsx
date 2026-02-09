@@ -74,7 +74,7 @@ export default function InviteTravelerPage() {
     setError(null);
 
     try {
-      await apiFetchData<InviteUserResponse>("/api/admin/invite-user", {
+      await apiFetchData<InviteUserResponse>("/api/users/invite", {
         method: "POST",
         data: { email, full_name: fullName, language },
         token: accessToken,
