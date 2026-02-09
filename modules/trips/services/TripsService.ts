@@ -1,5 +1,6 @@
 import type { ITripsService } from "./ITripsService";
-import { createTripsRepository, TripsRepository } from "../repositories";
+import type { ITripsRepository } from "../repositories";
+import { createTripsRepository } from "../repositories";
 import {
   validateTripsDataHandled,
   validateTrip,
@@ -29,9 +30,9 @@ import type {
  * Contains business logic for trips-related operations.
  */
 export class TripsService implements ITripsService {
-  private readonly repository: TripsRepository;
+  private readonly repository: ITripsRepository;
 
-  constructor(repository?: TripsRepository) {
+  constructor(repository?: ITripsRepository) {
     this.repository = repository ?? createTripsRepository();
   }
 

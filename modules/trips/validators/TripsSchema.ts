@@ -59,6 +59,8 @@ const InspectionSummarySchema = z.object({
 
 const TripSchema = z.object({
   id: z.string(),
+  booking_id: z.string(),
+  booking_number: z.string(),
   start_date: z.string(),
   end_date: z.string(),
   total_price: z.number(),

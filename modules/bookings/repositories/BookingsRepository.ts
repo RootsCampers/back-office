@@ -1,9 +1,10 @@
+import type { IBookingsRepository } from "./IBookingsRepository";
 import { apiFetch, apiFetchData } from "@/lib/api/client";
 import { ERROR_CODES } from "@/lib/constants/errorCodes";
 import decodeJWT from "@/modules/auth/utils/decode-jwt";
 import type { RejectBookingRequest, UpdateBookingStatusRequest, UserBookingParams } from "../domain";
 
-export class BookingsRepository {
+export class BookingsRepository implements IBookingsRepository {
   private readonly bookingsBaseEndpoint = "/api/bookings";
   private readonly dashboardEndpoint = "/api/bookings/dashboard";
   private readonly pendingConfirmationsEndpoint =

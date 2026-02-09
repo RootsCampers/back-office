@@ -1,15 +1,13 @@
 import { z } from "zod";
 import { handleZodValidationError } from "@/lib/validation/errorHandler";
-import {
+import type {
   BookingRequest,
   BookingResponse,
   BookingStatusUpdateResult,
   QuoteRequest,
   QuoteResponse,
-  DashboardBooking,
   DashboardBookingsData,
   UpdateBookingStatusResponse,
-  PendingConfirmation,
   PendingConfirmationsData,
 } from "../domain";
 
@@ -304,12 +302,50 @@ const TripOperationalStatusSchema = z.enum([
   "scheduled",
   "ready_for_pickup",
   "in_progress",
-  "returning",
+  "returned",
   "completed",
   "cancelled_before_start",
   "cancelled_during_trip",
   "aborted",
 ]);
+
+const PaymentStatusSchema = z.enum([
+  "pending",
+  "processing",
+  "approved",
+  "rejected",
+  "in_process",
+  "authorized",
+  "cancelled",
+  "refund_pending",
+  "refunded",
+  "partially_refunded",
+  "chargeback",
+]);
+
+const PaymentProviderSchema = z.enum([
+  "mercado_pago",
+  "stripe",
+  "bank_transfer",
+  "cash",
+  "other",
+]);
+
+const PaymentTypeSchema = z.enum([
+  "booking_payment",
+  "amendment_payment",
+  "refund",
+  "compensation",
+]);
+
+const DashboardBookingPaymentSchema = z.object({
+  id: z.string(),
+  status: PaymentStatusSchema,
+  provider: PaymentProviderSchema,
+  type: PaymentTypeSchema,
+  amount: z.number(),
+  created_at: z.string(),
+});
 
 const DashboardBookingSchema = z.object({
   id: z.string(),
@@ -325,6 +361,7 @@ const DashboardBookingSchema = z.object({
   start_km: z.number().nullable().optional(),
   end_km: z.number().nullable().optional(),
   total_km: z.number().nullable().optional(),
+  payment: DashboardBookingPaymentSchema.optional(),
   camper: DashboardBookingCamperSchema,
   traveler: DashboardBookingTravelerSchema,
   advertising: DashboardBookingAdvertisingSchema,

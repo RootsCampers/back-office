@@ -1,3 +1,4 @@
+import type { ITripsRepository } from "./ITripsRepository";
 import { apiFetch, apiFetchData } from "@/lib/api/client";
 import { ERROR_CODES } from "@/lib/constants/errorCodes";
 import type {
@@ -25,7 +26,7 @@ import type {
  * - Business logic
  * - Validation (handled by Validator layer)
  */
-export class TripsRepository {
+export class TripsRepository implements ITripsRepository {
   private readonly tripsBaseEndpoint = "/api/trips";
   private readonly bookingsBaseEndpoint = "/api/bookings";
 

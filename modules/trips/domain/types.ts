@@ -57,6 +57,8 @@ export interface InspectionSummary {
 
 export interface Trip {
   id: string;
+  booking_id: string;
+  booking_number: string;
   start_date: string;
   end_date: string;
   total_price: number;
