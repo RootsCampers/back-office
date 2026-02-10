@@ -15,6 +15,8 @@ import type {
   ReviewTravelerTripResponse,
 } from "../domain";
 
+import { getCurrentStatus } from "../domain";
+
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 function daysFromNow(d: number): string {
@@ -417,7 +419,6 @@ export class MockTripsRepository implements ITripsRepository {
 
     // Apply status filter
     if (params?.status) {
-      const { getCurrentStatus } = await import("../domain");
       filtered = filtered.filter(
         (t) => getCurrentStatus(t) === params.status
       );
