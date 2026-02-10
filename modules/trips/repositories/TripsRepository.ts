@@ -1,3 +1,4 @@
+import type { ITripsRepository } from "./ITripsRepository";
 import { apiFetch, apiFetchData } from "@/lib/api/client";
 import { ERROR_CODES } from "@/lib/constants/errorCodes";
 import type {
@@ -25,7 +26,7 @@ import type {
  * - Business logic
  * - Validation (handled by Validator layer)
  */
-export class TripsRepository {
+export class TripsRepository implements ITripsRepository {
   private readonly tripsBaseEndpoint = "/api/trips";
   private readonly bookingsBaseEndpoint = "/api/bookings";
 
@@ -37,10 +38,22 @@ export class TripsRepository {
    * @returns Promise<unknown> - Raw trips data from backend
    * @throws ApiError with appropriate error codes
    */
-  async fetchTrips(token: string): Promise<unknown> {
-    return apiFetchData<unknown>(this.tripsBaseEndpoint, {
+  async fetchTrips(
+    token: string,
+    params?: { status?: string; page?: number; limit?: number }
+  ): Promise<unknown> {
+    // Backend expects offset-based pagination, convert page to offset
+    const queryParams: Record<string, string | number | boolean> = {};
+    if (params?.status) queryParams.status = params.status;
+    if (params?.limit) queryParams.limit = params.limit;
+    if (params?.page && params?.limit) {
+      queryParams.offset = (params.page - 1) * params.limit;
+    }
+
+    return apiFetchData<unknown>(`${this.tripsBaseEndpoint}/dashboard`, {
       method: "GET",
       token,
+      params: queryParams,
       cache: "no-store",
       retries: 1,
       defaultValue: { trips: [], count: 0 },
@@ -244,11 +257,4 @@ export class TripsRepository {
       }
     );
   }
-}
-
-/**
- * Factory function to create TripsRepository instance
- */
-export function createTripsRepository(): TripsRepository {
-  return new TripsRepository();
 }

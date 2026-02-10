@@ -145,7 +145,7 @@ export enum TripOperationalStatus {
   PENDING = "pending",
   READY_FOR_PICKUP = "ready_for_pickup",
   SCHEDULED = "scheduled",
-  RETURNING = "returned",
+  RETURNING = "returning",
 }
 
 export const TripOperationalStatusLabels = {

@@ -1,15 +1,13 @@
 import { z } from "zod";
 import { handleZodValidationError } from "@/lib/validation/errorHandler";
-import {
+import type {
   BookingRequest,
   BookingResponse,
   BookingStatusUpdateResult,
   QuoteRequest,
   QuoteResponse,
-  DashboardBooking,
   DashboardBookingsData,
   UpdateBookingStatusResponse,
-  PendingConfirmation,
   PendingConfirmationsData,
 } from "../domain";
 
@@ -272,16 +270,16 @@ const DashboardBookingAdvertisingSchema = z.object({
 const OwnerReviewSchema = z.object({
   id: z.string(),
   rating: z.number(),
-  comment: z.string(),
+  comment: z.string().nullable().optional(),
   created_at: z.string(),
 });
 
 const TravelerReviewSchema = z.object({
   id: z.string(),
   owner_rating: z.number(),
-  owner_comment: z.string(),
+  owner_comment: z.string().nullable().optional(),
   camper_rating: z.number(),
-  camper_comment: z.string(),
+  camper_comment: z.string().nullable().optional(),
   created_at: z.string(),
 });
 
@@ -301,6 +299,7 @@ const InspectionSummarySchema = z.object({
 });
 
 const TripOperationalStatusSchema = z.enum([
+  "pending",
   "scheduled",
   "ready_for_pickup",
   "in_progress",
@@ -310,6 +309,44 @@ const TripOperationalStatusSchema = z.enum([
   "cancelled_during_trip",
   "aborted",
 ]);
+
+const PaymentStatusSchema = z.enum([
+  "pending",
+  "processing",
+  "approved",
+  "rejected",
+  "in_process",
+  "authorized",
+  "cancelled",
+  "refund_pending",
+  "refunded",
+  "partially_refunded",
+  "chargeback",
+]);
+
+const PaymentProviderSchema = z.enum([
+  "mercado_pago",
+  "stripe",
+  "bank_transfer",
+  "cash",
+  "other",
+]);
+
+const PaymentTypeSchema = z.enum([
+  "booking_payment",
+  "amendment_payment",
+  "refund",
+  "compensation",
+]);
+
+const DashboardBookingPaymentSchema = z.object({
+  id: z.string(),
+  status: PaymentStatusSchema,
+  provider: PaymentProviderSchema,
+  type: PaymentTypeSchema,
+  amount: z.number(),
+  created_at: z.string(),
+});
 
 const DashboardBookingSchema = z.object({
   id: z.string(),
@@ -325,6 +362,7 @@ const DashboardBookingSchema = z.object({
   start_km: z.number().nullable().optional(),
   end_km: z.number().nullable().optional(),
   total_km: z.number().nullable().optional(),
+  payment: DashboardBookingPaymentSchema.optional(),
   camper: DashboardBookingCamperSchema,
   traveler: DashboardBookingTravelerSchema,
   advertising: DashboardBookingAdvertisingSchema,

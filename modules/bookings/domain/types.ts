@@ -59,6 +59,84 @@ export type QuoteRequest = {
 };
 
 // ============================================================================
+// Payment Types (matching rootend payments schema)
+// ============================================================================
+
+export type PaymentStatus =
+  | "pending"
+  | "processing"
+  | "approved"
+  | "rejected"
+  | "in_process"
+  | "authorized"
+  | "cancelled"
+  | "refund_pending"
+  | "refunded"
+  | "partially_refunded"
+  | "chargeback";
+
+export const PaymentStatusLabels: Record<PaymentStatus, string> = {
+  pending: "Pending",
+  processing: "Processing",
+  approved: "Approved",
+  rejected: "Rejected",
+  in_process: "In Process",
+  authorized: "Authorized",
+  cancelled: "Cancelled",
+  refund_pending: "Refund Pending",
+  refunded: "Refunded",
+  partially_refunded: "Partially Refunded",
+  chargeback: "Chargeback",
+};
+
+export const PaymentStatusColors: Record<PaymentStatus, string> = {
+  pending: "border-slate-300 text-slate-700 bg-slate-50",
+  processing: "border-blue-300 text-blue-700 bg-blue-50",
+  approved: "border-green-300 text-green-700 bg-green-50",
+  rejected: "border-red-300 text-red-700 bg-red-50",
+  in_process: "border-blue-300 text-blue-700 bg-blue-50",
+  authorized: "border-teal-300 text-teal-700 bg-teal-50",
+  cancelled: "border-slate-300 text-slate-500 bg-slate-50",
+  refund_pending: "border-amber-300 text-amber-700 bg-amber-50",
+  refunded: "border-purple-300 text-purple-700 bg-purple-50",
+  partially_refunded: "border-purple-300 text-purple-700 bg-purple-50",
+  chargeback: "border-red-300 text-red-700 bg-red-50",
+};
+
+export type PaymentType =
+  | "booking_payment"
+  | "amendment_payment"
+  | "refund"
+  | "compensation";
+
+export type PaymentProvider =
+  | "mercado_pago"
+  | "stripe"
+  | "bank_transfer"
+  | "cash"
+  | "other";
+
+export const PaymentProviderLabels: Record<PaymentProvider, string> = {
+  mercado_pago: "Mercado Pago",
+  stripe: "Stripe",
+  bank_transfer: "Bank Transfer",
+  cash: "Cash",
+  other: "Other",
+};
+
+/**
+ * Payment summary for dashboard booking view
+ */
+export type DashboardBookingPayment = {
+  id: string;
+  status: PaymentStatus;
+  provider: PaymentProvider;
+  type: PaymentType;
+  amount: number;
+  created_at: string;
+};
+
+// ============================================================================
 // Dashboard Types (Enriched booking data for owner/admin dashboard)
 // ============================================================================
 
@@ -138,7 +216,7 @@ export type DashboardBookingAdvertising = {
 export type OwnerReview = {
   id: string;
   rating: number;
-  comment: string;
+  comment?: string | null;
   created_at: string;
 };
 
@@ -148,9 +226,9 @@ export type OwnerReview = {
 export type TravelerReview = {
   id: string;
   owner_rating: number;
-  owner_comment: string;
+  owner_comment?: string | null;
   camper_rating: number;
-  camper_comment: string;
+  camper_comment?: string | null;
   created_at: string;
 };
 
@@ -203,6 +281,9 @@ export type DashboardBooking = {
   start_km?: number | null;
   end_km?: number | null;
   total_km?: number | null;
+
+  // Payment info (primary payment for this booking)
+  payment?: DashboardBookingPayment;
 
   // Related entities (joined)
   camper: DashboardBookingCamper;

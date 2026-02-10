@@ -1,9 +1,10 @@
+import type { IBookingsRepository } from "./IBookingsRepository";
 import { apiFetch, apiFetchData } from "@/lib/api/client";
 import { ERROR_CODES } from "@/lib/constants/errorCodes";
 import decodeJWT from "@/modules/auth/utils/decode-jwt";
 import type { RejectBookingRequest, UpdateBookingStatusRequest, UserBookingParams } from "../domain";
 
-export class BookingsRepository {
+export class BookingsRepository implements IBookingsRepository {
   private readonly bookingsBaseEndpoint = "/api/bookings";
   private readonly dashboardEndpoint = "/api/bookings/dashboard";
   private readonly pendingConfirmationsEndpoint =
@@ -74,10 +75,18 @@ export class BookingsRepository {
     token: string,
     params?: { status?: string; page?: number; limit?: number }
   ): Promise<unknown> {
+    // Backend expects offset-based pagination, convert page to offset
+    const queryParams: Record<string, string | number | boolean> = {};
+    if (params?.status) queryParams.status = params.status;
+    if (params?.limit) queryParams.limit = params.limit;
+    if (params?.page && params?.limit) {
+      queryParams.offset = (params.page - 1) * params.limit;
+    }
+
     return apiFetchData<unknown>(this.dashboardEndpoint, {
       method: "GET",
       token,
-      params,
+      params: queryParams,
       cache: "no-store",
       retries: 1,
       defaultValue: { bookings: [], count: 0 },
@@ -205,8 +214,4 @@ export class BookingsRepository {
       data: data || {},
     });
   }
-}
-
-export function createBookingRepository(): BookingsRepository {
-  return new BookingsRepository();
 }

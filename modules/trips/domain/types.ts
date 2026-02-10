@@ -27,16 +27,16 @@ export interface TripTraveler {
 export interface OwnerReview {
   id: string;
   rating: number;
-  comment: string;
+  comment?: string | null;
   created_at: string;
 }
 
 export interface TravelerReview {
   id: string;
   owner_rating: number;
-  owner_comment: string;
+  owner_comment?: string | null;
   camper_rating: number;
-  camper_comment: string;
+  camper_comment?: string | null;
   created_at: string;
 }
 
@@ -57,6 +57,8 @@ export interface InspectionSummary {
 
 export interface Trip {
   id: string;
+  booking_id: string;
+  booking_number: string;
   start_date: string;
   end_date: string;
   total_price: number;
@@ -191,4 +193,13 @@ export interface ReviewTravelerTripResponse {
   owner_rating?: number;
   trip_id: string;
   updated_at?: string;
+}
+
+/**
+ * Gets the current operational status of a trip from its status history.
+ * Returns the most recent status, or "pending" if no statuses exist.
+ */
+export function getCurrentStatus(trip: Trip): string {
+  if (trip.statuses.length === 0) return "pending";
+  return trip.statuses[trip.statuses.length - 1].status;
 }

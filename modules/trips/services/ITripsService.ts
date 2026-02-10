@@ -22,7 +22,10 @@ export interface ITripsService {
    * @param token - JWT access token
    * @returns Validated trips data
    */
-  getTrips(token: string): Promise<TripsData>;
+  getTrips(
+    token: string,
+    params?: { status?: string; page?: number; limit?: number }
+  ): Promise<TripsData>;
 
   /**
    * Get a single trip by ID
