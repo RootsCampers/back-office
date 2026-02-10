@@ -48,6 +48,7 @@ export function BookingsFilters({
 
           <SelectGroup>
             <SelectLabel>Confirmation</SelectLabel>
+            <SelectItem value="pending_confirmation">Pending Confirmation</SelectItem>
             <SelectItem value="confirmed">Confirmed</SelectItem>
           </SelectGroup>
 

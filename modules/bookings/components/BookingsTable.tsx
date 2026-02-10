@@ -49,14 +49,14 @@ export function BookingsTable({
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectBookingId, setRejectBookingId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
-  const [actionLoading, setActionLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   async function handleConfirm(id: string) {
-    setActionLoading(true);
+    setLoadingId(id);
     try {
       await onConfirm(id);
     } finally {
-      setActionLoading(false);
+      setLoadingId(null);
     }
   }
 
@@ -68,12 +68,12 @@ export function BookingsTable({
 
   async function handleReject() {
     if (!rejectBookingId) return;
-    setActionLoading(true);
+    setLoadingId(rejectBookingId);
     try {
       await onReject(rejectBookingId, rejectReason || undefined);
       setRejectDialogOpen(false);
     } finally {
-      setActionLoading(false);
+      setLoadingId(null);
     }
   }
 
@@ -187,14 +187,14 @@ export function BookingsTable({
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() => handleConfirm(row.id)}
-                disabled={actionLoading}
+                disabled={loadingId === row.id}
               >
                 <Check className="h-4 w-4 mr-2" />
                 Confirm
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => openRejectDialog(row.id)}
-                disabled={actionLoading}
+                disabled={loadingId === row.id}
                 className="text-red-600"
               >
                 <X className="h-4 w-4 mr-2" />
@@ -234,14 +234,14 @@ export function BookingsTable({
             <Button
               variant="outline"
               onClick={() => setRejectDialogOpen(false)}
-              disabled={actionLoading}
+              disabled={loadingId !== null}
             >
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleReject}
-              disabled={actionLoading}
+              disabled={loadingId !== null}
             >
               Reject Booking
             </Button>
