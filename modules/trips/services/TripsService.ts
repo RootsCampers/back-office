@@ -36,8 +36,11 @@ export class TripsService implements ITripsService {
     this.repository = repository ?? createTripsRepository();
   }
 
-  async getTrips(token: string): Promise<TripsData> {
-    const rawData = await this.repository.fetchTrips(token);
+  async getTrips(
+    token: string,
+    params?: { status?: string; page?: number; limit?: number }
+  ): Promise<TripsData> {
+    const rawData = await this.repository.fetchTrips(token, params);
     return validateTripsDataHandled(rawData);
   }
 

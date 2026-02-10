@@ -299,6 +299,7 @@ const InspectionSummarySchema = z.object({
 });
 
 const TripOperationalStatusSchema = z.enum([
+  "pending",
   "scheduled",
   "ready_for_pickup",
   "in_progress",

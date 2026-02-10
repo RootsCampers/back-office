@@ -11,7 +11,10 @@ import type {
 } from "../domain";
 
 export interface ITripsRepository {
-  fetchTrips(token: string): Promise<unknown>;
+  fetchTrips(
+    token: string,
+    params?: { status?: string; page?: number; limit?: number }
+  ): Promise<unknown>;
   fetchTripById(id: string, token: string): Promise<unknown>;
   updateTripStatus(
     id: string,

@@ -26,6 +26,7 @@ export interface UseDashboardBookingsResult {
   bookings: DashboardBooking[];
   stats: UseDashboardBookingsStats;
   count: number;
+  totalCount: number;
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
@@ -141,6 +142,7 @@ export function useDashboardBookings(
     bookings,
     stats,
     count: bookings.length,
+    totalCount: data?.count ?? 0,
     isLoading,
     error,
     refetch: fetchBookings,

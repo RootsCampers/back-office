@@ -12,6 +12,8 @@ import { useState, useEffect, useCallback } from "react";
 export interface UseTripsParams {
   status?: string;
   search?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface UseTripsStats {
@@ -25,6 +27,7 @@ export interface UseTripsStats {
 export interface UseTripsResult {
   trips: Trip[];
   stats: UseTripsStats;
+  totalCount: number;
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
@@ -49,7 +52,11 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
       setError(null);
 
       const service = createTripsService();
-      const result = await service.getTrips(accessToken);
+      const result = await service.getTrips(accessToken, {
+        status: params?.status,
+        page: params?.page,
+        limit: params?.limit,
+      });
 
       setData(result);
     } catch (err) {
@@ -60,18 +67,14 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
     } finally {
       setIsLoading(false);
     }
-  }, [accessToken]);
+  }, [accessToken, params?.status, params?.page, params?.limit]);
 
   useEffect(() => {
     fetchTrips();
   }, [fetchTrips]);
 
-  // Filter trips client-side
+  // Client-side search filtering (within current page)
   let trips = data?.trips ?? [];
-
-  if (params?.status) {
-    trips = trips.filter((t) => getCurrentStatus(t) === params.status);
-  }
 
   if (params?.search) {
     const q = params.search.toLowerCase();
@@ -83,12 +86,12 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
     );
   }
 
-  // Sort by start_date descending (upcoming first)
+  // Sort by start_date ascending (upcoming first)
   trips = [...trips].sort(
     (a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
   );
 
-  // Calculate stats from ALL trips (not filtered)
+  // Calculate stats from current page trips
   const allTrips = data?.trips ?? [];
   const today = new Date().toISOString().split("T")[0];
   const stats: UseTripsStats = {
@@ -149,6 +152,7 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
   return {
     trips,
     stats,
+    totalCount: data?.count ?? 0,
     isLoading,
     error,
     refetch: fetchTrips,

@@ -412,7 +412,10 @@ function getCurrentStatus(trip: Trip): string {
 export class MockTripsRepository implements ITripsRepository {
   private trips: Trip[] = [...MOCK_TRIPS];
 
-  async fetchTrips(_token: string): Promise<TripsData> {
+  async fetchTrips(
+    _token: string,
+    _params?: { status?: string; page?: number; limit?: number }
+  ): Promise<TripsData> {
     await delay(100);
     return { trips: [...this.trips], count: this.trips.length };
   }

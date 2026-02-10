@@ -216,7 +216,7 @@ export type DashboardBookingAdvertising = {
 export type OwnerReview = {
   id: string;
   rating: number;
-  comment: string;
+  comment?: string | null;
   created_at: string;
 };
 
@@ -226,9 +226,9 @@ export type OwnerReview = {
 export type TravelerReview = {
   id: string;
   owner_rating: number;
-  owner_comment: string;
+  owner_comment?: string | null;
   camper_rating: number;
-  camper_comment: string;
+  camper_comment?: string | null;
   created_at: string;
 };
 

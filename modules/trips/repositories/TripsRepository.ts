@@ -38,10 +38,22 @@ export class TripsRepository implements ITripsRepository {
    * @returns Promise<unknown> - Raw trips data from backend
    * @throws ApiError with appropriate error codes
    */
-  async fetchTrips(token: string): Promise<unknown> {
+  async fetchTrips(
+    token: string,
+    params?: { status?: string; page?: number; limit?: number }
+  ): Promise<unknown> {
+    // Backend expects offset-based pagination, convert page to offset
+    const queryParams: Record<string, string | number | boolean> = {};
+    if (params?.status) queryParams.status = params.status;
+    if (params?.limit) queryParams.limit = params.limit;
+    if (params?.page && params?.limit) {
+      queryParams.offset = (params.page - 1) * params.limit;
+    }
+
     return apiFetchData<unknown>(`${this.tripsBaseEndpoint}/dashboard`, {
       method: "GET",
       token,
+      params: queryParams,
       cache: "no-store",
       retries: 1,
       defaultValue: { trips: [], count: 0 },
@@ -245,11 +257,4 @@ export class TripsRepository implements ITripsRepository {
       }
     );
   }
-}
-
-/**
- * Factory function to create TripsRepository instance
- */
-export function createTripsRepository(): TripsRepository {
-  return new TripsRepository();
 }
