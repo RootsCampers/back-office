@@ -194,3 +194,12 @@ export interface ReviewTravelerTripResponse {
   trip_id: string;
   updated_at?: string;
 }
+
+/**
+ * Gets the current operational status of a trip from its status history.
+ * Returns the most recent status, or "pending" if no statuses exist.
+ */
+export function getCurrentStatus(trip: Trip): string {
+  if (trip.statuses.length === 0) return "pending";
+  return trip.statuses[trip.statuses.length - 1].status;
+}

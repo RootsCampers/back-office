@@ -3,7 +3,7 @@
 import type { Trip } from "../domain";
 import type { ColumnDef } from "@/components/shared/DataTable";
 
-import { getCurrentStatus } from "../repositories";
+import { getCurrentStatus } from "../domain";
 import { TripStatusBadge } from "@/modules/shared/components";
 import { DataTable } from "@/components/shared/DataTable";
 import { formatDateRange, daysUntil, isOverdue } from "@/lib/format";

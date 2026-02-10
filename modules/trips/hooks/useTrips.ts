@@ -2,8 +2,8 @@
 
 import type { Trip, TripsData } from "../domain";
 
+import { getCurrentStatus } from "../domain";
 import { createTripsService } from "../services";
-import { getCurrentStatus } from "../repositories";
 import { useAccessToken } from "@/modules/auth/hooks";
 import { isOverdue } from "@/lib/format";
 

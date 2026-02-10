@@ -404,20 +404,34 @@ const MOCK_TRIPS: Trip[] = [
   },
 ];
 
-function getCurrentStatus(trip: Trip): string {
-  if (trip.statuses.length === 0) return "pending";
-  return trip.statuses[trip.statuses.length - 1].status;
-}
-
 export class MockTripsRepository implements ITripsRepository {
   private trips: Trip[] = [...MOCK_TRIPS];
 
   async fetchTrips(
     _token: string,
-    _params?: { status?: string; page?: number; limit?: number }
+    params?: { status?: string; page?: number; limit?: number }
   ): Promise<TripsData> {
     await delay(100);
-    return { trips: [...this.trips], count: this.trips.length };
+
+    let filtered = [...this.trips];
+
+    // Apply status filter
+    if (params?.status) {
+      const { getCurrentStatus } = await import("../domain");
+      filtered = filtered.filter(
+        (t) => getCurrentStatus(t) === params.status
+      );
+    }
+
+    const count = filtered.length;
+
+    // Apply pagination
+    const limit = params?.limit ?? filtered.length;
+    const page = params?.page ?? 1;
+    const offset = (page - 1) * limit;
+    filtered = filtered.slice(offset, offset + limit);
+
+    return { trips: filtered, count };
   }
 
   async fetchTripById(id: string, _token: string): Promise<unknown> {
@@ -527,9 +541,6 @@ export class MockTripsRepository implements ITripsRepository {
     return { id: `review-${Date.now()}`, ...data };
   }
 }
-
-// Helper exported for use in hooks
-export { getCurrentStatus };
 
 export function createMockTripsRepository(): ITripsRepository {
   return new MockTripsRepository();

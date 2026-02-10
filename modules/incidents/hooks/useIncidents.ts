@@ -2,7 +2,7 @@
 
 import type { Incident, IncidentsData, IncidentStatus, IncidentSeverity } from "../domain";
 
-import { createIncidentsRepository } from "../repositories";
+import { createIncidentsService } from "../services";
 import { useAccessToken } from "@/modules/auth/hooks";
 
 import { useState, useEffect, useCallback } from "react";
@@ -44,8 +44,8 @@ export function useIncidents(params?: UseIncidentsParams): UseIncidentsResult {
       setIsLoading(true);
       setError(null);
 
-      const repo = createIncidentsRepository();
-      const result = await repo.fetchIncidents({
+      const service = createIncidentsService();
+      const result = await service.fetchIncidents(accessToken, {
         status: params?.status,
         severity: params?.severity,
       });
