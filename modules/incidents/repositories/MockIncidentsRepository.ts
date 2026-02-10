@@ -247,10 +247,13 @@ const MOCK_INCIDENTS: Incident[] = [
 export class MockIncidentsRepository implements IIncidentsRepository {
   private incidents: Incident[] = [...MOCK_INCIDENTS];
 
-  async fetchIncidents(params?: {
-    status?: IncidentStatus;
-    severity?: IncidentSeverity;
-  }): Promise<IncidentsData> {
+  async fetchIncidents(
+    _token: string,
+    params?: {
+      status?: IncidentStatus;
+      severity?: IncidentSeverity;
+    }
+  ): Promise<IncidentsData> {
     await delay(100);
 
     let filtered = [...this.incidents];

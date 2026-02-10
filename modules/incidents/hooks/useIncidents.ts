@@ -5,7 +5,7 @@ import type { Incident, IncidentsData, IncidentStatus, IncidentSeverity } from "
 import { createIncidentsService } from "../services";
 import { useAccessToken } from "@/modules/auth/hooks";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface UseIncidentsParams {
   status?: IncidentStatus;
@@ -30,6 +30,7 @@ export interface UseIncidentsResult {
 
 export function useIncidents(params?: UseIncidentsParams): UseIncidentsResult {
   const accessToken = useAccessToken();
+  const serviceRef = useRef(createIncidentsService());
   const [data, setData] = useState<IncidentsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,8 +45,7 @@ export function useIncidents(params?: UseIncidentsParams): UseIncidentsResult {
       setIsLoading(true);
       setError(null);
 
-      const service = createIncidentsService();
-      const result = await service.fetchIncidents(accessToken, {
+      const result = await serviceRef.current.fetchIncidents(accessToken, {
         status: params?.status,
         severity: params?.severity,
       });

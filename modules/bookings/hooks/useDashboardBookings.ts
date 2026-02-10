@@ -5,7 +5,7 @@ import type { DashboardBooking, DashboardBookingsData } from "../domain";
 import { createBookingService } from "../services";
 import { useAccessToken } from "@/modules/auth/hooks";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface UseDashboardBookingsParams {
   status?: string;
@@ -42,6 +42,7 @@ export function useDashboardBookings(
   params?: UseDashboardBookingsParams
 ): UseDashboardBookingsResult {
   const accessToken = useAccessToken();
+  const serviceRef = useRef(createBookingService());
   const [data, setData] = useState<DashboardBookingsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,8 +57,7 @@ export function useDashboardBookings(
       setIsLoading(true);
       setError(null);
 
-      const service = createBookingService();
-      const result = await service.fetchDashboardBookings(accessToken, {
+      const result = await serviceRef.current.fetchDashboardBookings(accessToken, {
         status: params?.status,
         page: params?.page,
         limit: params?.limit,
@@ -110,8 +110,7 @@ export function useDashboardBookings(
     async (id: string) => {
       if (!accessToken) return;
       try {
-        const service = createBookingService();
-        await service.confirmBooking(accessToken, id);
+        await serviceRef.current.confirmBooking(accessToken, id);
         await fetchBookings();
       } catch (err) {
         const message =
@@ -126,8 +125,7 @@ export function useDashboardBookings(
     async (id: string, reason?: string) => {
       if (!accessToken) return;
       try {
-        const service = createBookingService();
-        await service.rejectBooking(accessToken, id, reason ? { reason } : undefined);
+        await serviceRef.current.rejectBooking(accessToken, id, reason ? { reason } : undefined);
         await fetchBookings();
       } catch (err) {
         const message =

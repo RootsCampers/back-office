@@ -12,13 +12,13 @@ export class IncidentsService implements IIncidentsService {
   }
 
   async fetchIncidents(
-    _token: string,
+    token: string,
     params?: {
       status?: IncidentStatus;
       severity?: IncidentSeverity;
     }
   ): Promise<IncidentsData> {
-    return this.repository.fetchIncidents(params);
+    return this.repository.fetchIncidents(token, params);
   }
 }
 

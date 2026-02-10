@@ -64,6 +64,8 @@ export function TripsTable({
   }
 
   async function handleSubmit() {
+    if (!selectedTripId) return;
+
     const km = Number(kmValue);
     if (isNaN(km) || km <= 0) {
       setKmError("Enter a valid km reading");
@@ -78,9 +80,9 @@ export function TripsTable({
     setActionLoading(true);
     try {
       if (dialogMode === "start") {
-        await onStartTrip(selectedTripId!, km);
+        await onStartTrip(selectedTripId, km);
       } else {
-        await onCompleteTrip(selectedTripId!, km);
+        await onCompleteTrip(selectedTripId, km);
       }
       setDialogOpen(false);
     } finally {

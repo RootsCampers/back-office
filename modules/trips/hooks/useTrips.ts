@@ -7,7 +7,7 @@ import { createTripsService } from "../services";
 import { useAccessToken } from "@/modules/auth/hooks";
 import { isOverdue } from "@/lib/format";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface UseTripsParams {
   status?: string;
@@ -37,6 +37,7 @@ export interface UseTripsResult {
 
 export function useTrips(params?: UseTripsParams): UseTripsResult {
   const accessToken = useAccessToken();
+  const serviceRef = useRef(createTripsService());
   const [data, setData] = useState<TripsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,8 +52,7 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
       setIsLoading(true);
       setError(null);
 
-      const service = createTripsService();
-      const result = await service.getTrips(accessToken, {
+      const result = await serviceRef.current.getTrips(accessToken, {
         status: params?.status,
         page: params?.page,
         limit: params?.limit,
@@ -121,8 +121,7 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
     async (id: string, km: number) => {
       if (!accessToken) return;
       try {
-        const service = createTripsService();
-        await service.startTrip(id, km, accessToken);
+        await serviceRef.current.startTrip(id, km, accessToken);
         await fetchTrips();
       } catch (err) {
         const message =
@@ -137,8 +136,7 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
     async (id: string, km: number) => {
       if (!accessToken) return;
       try {
-        const service = createTripsService();
-        await service.completeTrip(id, km, accessToken);
+        await serviceRef.current.completeTrip(id, km, accessToken);
         await fetchTrips();
       } catch (err) {
         const message =
