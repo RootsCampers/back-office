@@ -215,7 +215,3 @@ export class BookingsRepository implements IBookingsRepository {
     });
   }
 }
-
-export function createBookingRepository(): BookingsRepository {
-  return new BookingsRepository();
-}
