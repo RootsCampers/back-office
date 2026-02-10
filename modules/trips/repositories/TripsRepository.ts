@@ -39,7 +39,7 @@ export class TripsRepository implements ITripsRepository {
    * @throws ApiError with appropriate error codes
    */
   async fetchTrips(token: string): Promise<unknown> {
-    return apiFetchData<unknown>(this.tripsBaseEndpoint, {
+    return apiFetchData<unknown>(`${this.tripsBaseEndpoint}/dashboard`, {
       method: "GET",
       token,
       cache: "no-store",

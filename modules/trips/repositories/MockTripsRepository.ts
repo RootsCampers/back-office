@@ -196,7 +196,7 @@ const MOCK_TRIPS: Trip[] = [
     start_km: 51000,
     price_per_day: 50000,
     minimum_days: 3,
-    statuses: makeStatuses([["scheduled", -20], ["in_progress", -7], ["returned", -1]]),
+    statuses: makeStatuses([["scheduled", -20], ["in_progress", -7], ["returning", -1]]),
     camper: { id: "c6", name: "Valle Central", images: [], type: "alcove", license_plate: "UVWX-12" },
     traveler: { id: "t12", email: "sofia.paredes@gmail.com" },
     owner_review: null,

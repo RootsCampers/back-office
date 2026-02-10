@@ -188,7 +188,7 @@ export function TripsTable({
         const canStart =
           status === "scheduled" || status === "ready_for_pickup";
         const canComplete =
-          status === "in_progress" || status === "returned";
+          status === "in_progress" || status === "returning";
 
         if (!canStart && !canComplete) return null;
 
@@ -231,7 +231,7 @@ export function TripsTable({
         rowClassName={(row) => {
           const status = getCurrentStatus(row);
           const overdue =
-            (status === "in_progress" || status === "returned") &&
+            (status === "in_progress" || status === "returning") &&
             isOverdue(row.end_date);
           return cn(overdue && "bg-red-50 border-l-4 border-red-400");
         }}

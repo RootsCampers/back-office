@@ -100,11 +100,11 @@ export function useTrips(params?: UseTripsParams): UseTripsResult {
       (t) => getCurrentStatus(t) === "in_progress"
     ).length,
     returning: allTrips.filter(
-      (t) => getCurrentStatus(t) === "returned"
+      (t) => getCurrentStatus(t) === "returning"
     ).length,
     overdue: allTrips.filter((t) => {
       const s = getCurrentStatus(t);
-      return (s === "in_progress" || s === "returned") && isOverdue(t.end_date);
+      return (s === "in_progress" || s === "returning") && isOverdue(t.end_date);
     }).length,
     completedToday: allTrips.filter((t) => {
       const s = getCurrentStatus(t);

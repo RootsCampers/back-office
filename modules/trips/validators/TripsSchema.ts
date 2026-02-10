@@ -29,16 +29,16 @@ const TripTravelerSchema = z.object({
 const OwnerReviewSchema = z.object({
   id: z.string(),
   rating: z.number(),
-  comment: z.string(),
+  comment: z.string().nullable().optional(),
   created_at: z.string(),
 });
 
 const TravelerReviewSchema = z.object({
   id: z.string(),
   owner_rating: z.number(),
-  owner_comment: z.string(),
+  owner_comment: z.string().nullable().optional(),
   camper_rating: z.number(),
-  camper_comment: z.string(),
+  camper_comment: z.string().nullable().optional(),
   created_at: z.string(),
 });
 
@@ -57,6 +57,11 @@ const InspectionSummarySchema = z.object({
   photos: z.array(InspectionPhotoSchema),
 });
 
+const TripAdvertisingSchema = z.object({
+  id: z.number(),
+  minimum_days: z.number(),
+});
+
 const TripSchema = z.object({
   id: z.string(),
   booking_id: z.string(),
@@ -69,7 +74,8 @@ const TripSchema = z.object({
   end_km: z.number().nullable().optional(),
   total_km: z.number().nullable().optional(),
   price_per_day: z.number(),
-  minimum_days: z.number(),
+  minimum_days: z.number().optional(),
+  advertising: TripAdvertisingSchema.optional(),
   statuses: z.array(TripStatusSchema),
   camper: TripCamperSchema,
   traveler: TripTravelerSchema,
@@ -77,7 +83,10 @@ const TripSchema = z.object({
   traveler_review: TravelerReviewSchema.nullable(),
   can_review: z.boolean(),
   inspection: InspectionSummarySchema.nullable().optional(),
-});
+}).transform((data) => ({
+  ...data,
+  minimum_days: data.minimum_days ?? data.advertising?.minimum_days ?? 0,
+}));
 
 const TripsDataSchema = z.object({
   trips: z.array(TripSchema),

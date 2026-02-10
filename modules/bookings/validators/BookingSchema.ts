@@ -270,16 +270,16 @@ const DashboardBookingAdvertisingSchema = z.object({
 const OwnerReviewSchema = z.object({
   id: z.string(),
   rating: z.number(),
-  comment: z.string(),
+  comment: z.string().nullable().optional(),
   created_at: z.string(),
 });
 
 const TravelerReviewSchema = z.object({
   id: z.string(),
   owner_rating: z.number(),
-  owner_comment: z.string(),
+  owner_comment: z.string().nullable().optional(),
   camper_rating: z.number(),
-  camper_comment: z.string(),
+  camper_comment: z.string().nullable().optional(),
   created_at: z.string(),
 });
 
@@ -302,7 +302,7 @@ const TripOperationalStatusSchema = z.enum([
   "scheduled",
   "ready_for_pickup",
   "in_progress",
-  "returned",
+  "returning",
   "completed",
   "cancelled_before_start",
   "cancelled_during_trip",

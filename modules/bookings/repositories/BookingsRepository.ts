@@ -75,10 +75,18 @@ export class BookingsRepository implements IBookingsRepository {
     token: string,
     params?: { status?: string; page?: number; limit?: number }
   ): Promise<unknown> {
+    // Backend expects offset-based pagination, convert page to offset
+    const queryParams: Record<string, string | number | boolean> = {};
+    if (params?.status) queryParams.status = params.status;
+    if (params?.limit) queryParams.limit = params.limit;
+    if (params?.page && params?.limit) {
+      queryParams.offset = (params.page - 1) * params.limit;
+    }
+
     return apiFetchData<unknown>(this.dashboardEndpoint, {
       method: "GET",
       token,
-      params,
+      params: queryParams,
       cache: "no-store",
       retries: 1,
       defaultValue: { bookings: [], count: 0 },
