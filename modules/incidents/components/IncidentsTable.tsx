@@ -114,7 +114,7 @@ export function IncidentsTable({ incidents, isLoading }: IncidentsTableProps) {
       header: "Reported",
       render: (row) => (
         <span className="text-sm text-slate-500">
-          {formatRelativeTime(row.reported_at)}
+          {row.reported_at ? formatRelativeTime(row.reported_at) : "—"}
         </span>
       ),
     },

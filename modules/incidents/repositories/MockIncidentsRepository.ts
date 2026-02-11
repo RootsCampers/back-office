@@ -1,5 +1,5 @@
 import type { IIncidentsRepository } from "./IIncidentsRepository";
-import type { Incident, IncidentsData, IncidentStatus, IncidentSeverity } from "../domain";
+import type { Incident, IncidentStatus, IncidentSeverity } from "../domain";
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -253,7 +253,7 @@ export class MockIncidentsRepository implements IIncidentsRepository {
       status?: IncidentStatus;
       severity?: IncidentSeverity;
     }
-  ): Promise<IncidentsData> {
+  ): Promise<unknown> {
     await delay(100);
 
     let filtered = [...this.incidents];
@@ -268,13 +268,9 @@ export class MockIncidentsRepository implements IIncidentsRepository {
     // Sort by reported_at descending (newest first)
     filtered.sort(
       (a, b) =>
-        new Date(b.reported_at).getTime() - new Date(a.reported_at).getTime()
+        new Date(b.reported_at ?? 0).getTime() - new Date(a.reported_at ?? 0).getTime()
     );
 
     return { incidents: filtered, count: filtered.length };
   }
-}
-
-export function createIncidentsRepository(): IIncidentsRepository {
-  return new MockIncidentsRepository();
 }

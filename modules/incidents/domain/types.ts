@@ -18,9 +18,11 @@ export interface Incident {
   severity: IncidentSeverity;
   status: IncidentStatus;
   title: string;
-  description: string;
-  reported_at: string;
+  description?: string;
+  reported_at?: string;
   resolved_at?: string;
+  resolution_notes?: string;
+  photos?: string[];
   camper: {
     id: string;
     name: string;
@@ -30,8 +32,8 @@ export interface Incident {
     id: string;
     email: string;
   };
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IncidentsData {

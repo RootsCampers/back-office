@@ -1,4 +1,4 @@
-import type { IncidentsData, IncidentStatus, IncidentSeverity } from "../domain";
+import type { IncidentStatus, IncidentSeverity } from "../domain";
 
 export interface IIncidentsRepository {
   fetchIncidents(
@@ -6,6 +6,8 @@ export interface IIncidentsRepository {
     params?: {
       status?: IncidentStatus;
       severity?: IncidentSeverity;
+      limit?: number;
+      offset?: number;
     }
-  ): Promise<IncidentsData>;
+  ): Promise<unknown>;
 }

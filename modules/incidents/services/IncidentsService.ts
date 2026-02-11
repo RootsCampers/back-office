@@ -3,6 +3,7 @@ import type { IIncidentsRepository } from "../repositories";
 import type { IncidentsData, IncidentStatus, IncidentSeverity } from "../domain";
 
 import { createIncidentsRepository } from "../repositories";
+import { validateIncidentsDataHandled } from "../validators";
 
 export class IncidentsService implements IIncidentsService {
   private readonly repository: IIncidentsRepository;
@@ -18,7 +19,8 @@ export class IncidentsService implements IIncidentsService {
       severity?: IncidentSeverity;
     }
   ): Promise<IncidentsData> {
-    return this.repository.fetchIncidents(token, params);
+    const rawData = await this.repository.fetchIncidents(token, params);
+    return validateIncidentsDataHandled(rawData);
   }
 }
 
