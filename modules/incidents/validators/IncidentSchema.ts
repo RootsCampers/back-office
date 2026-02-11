@@ -7,7 +7,7 @@ const DashboardIncidentSchema = z
     id: z.string(),
     trip_id: z.string(),
     booking_number: z.string(),
-    incident_type: z.string(),
+    incident_type: z.enum(["accident", "breakdown", "damage", "theft", "complaint", "other"]),
     severity: z.enum(["low", "medium", "high", "critical"]),
     status: z.enum(["open", "in_progress", "resolved", "closed"]),
     title: z.string(),
@@ -55,5 +55,6 @@ export function validateIncidentsDataHandled(data: unknown): IncidentsData {
     return DashboardIncidentsDataSchema.parse(data) as unknown as IncidentsData;
   } catch (error) {
     handleZodValidationError(error, "incidents");
+    return { incidents: [], count: 0 };
   }
 }
