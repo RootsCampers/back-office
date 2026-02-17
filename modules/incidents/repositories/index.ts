@@ -1,10 +1,10 @@
 import type { IIncidentsRepository } from "./IIncidentsRepository";
-import { MockIncidentsRepository } from "./MockIncidentsRepository";
+import { IncidentsRepository } from "./IncidentsRepository";
 
 export type { IIncidentsRepository } from "./IIncidentsRepository";
+export { IncidentsRepository } from "./IncidentsRepository";
 export { MockIncidentsRepository } from "./MockIncidentsRepository";
 
-// Swap implementation when rootend endpoints are ready
 export function createIncidentsRepository(): IIncidentsRepository {
-  return new MockIncidentsRepository();
+  return new IncidentsRepository();
 }
